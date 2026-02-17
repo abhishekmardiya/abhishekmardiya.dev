@@ -1,0 +1,53 @@
+import type { Metadata } from "next";
+import { notFound } from "next/navigation";
+import { MDXRemote } from "next-mdx-remote/rsc";
+import { MDXComponents } from "@/component/MDXComponents";
+import { SITE_URL } from "@/constants";
+import { formatSlugToTitle, getBlogSlugs, readBlogMDXFile } from "@/utils";
+
+type Props = {
+  params: Promise<{ slug: string }>;
+};
+
+export async function generateStaticParams() {
+  const slugs = await getBlogSlugs();
+  const ssgSlugs = slugs.map((slug) => ({ slug }));
+
+  return ssgSlugs;
+}
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { slug } = await params;
+
+  try {
+    const title = formatSlugToTitle(slug);
+
+    return {
+      title,
+      alternates: {
+        canonical: `${SITE_URL}/blog/${slug}`,
+      },
+    };
+  } catch {
+    return { title: "Blog Post Not Found" };
+  }
+}
+
+export default async function BlogPage({ params }: Props) {
+  const { slug } = await params;
+
+  let content: string;
+  try {
+    content = await readBlogMDXFile({ slug });
+  } catch {
+    notFound();
+  }
+
+  const components = MDXComponents();
+
+  return (
+    <article className="markdown prose max-w-none">
+      <MDXRemote source={content} components={components} />
+    </article>
+  );
+}
