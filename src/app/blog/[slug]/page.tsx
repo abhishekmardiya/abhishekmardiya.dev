@@ -9,6 +9,8 @@ type Props = {
   params: Promise<{ slug: string }>;
 };
 
+export const dynamicParams = false;
+
 export async function generateStaticParams() {
   const { blogRoutes } = await getAllSlug();
 
