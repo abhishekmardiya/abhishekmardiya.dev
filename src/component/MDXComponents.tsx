@@ -11,38 +11,23 @@ type BlockquoteProps = ComponentPropsWithoutRef<"blockquote">;
 
 const components = {
   h1: (props: HeadingProps) => (
-    <h1
-      className="font-medium text-4xl text-zinc-200 pt-12 mb-10"
-      {...props}
-    />
+    <h1 className="font-medium text-4xl text-zinc-200 pt-12 mb-10" {...props} />
   ),
   h2: (props: HeadingProps) => (
-    <h2
-      className="text-zinc-200 font-medium mt-8 mb-3"
-      {...props}
-    />
+    <h2 className="text-zinc-200 font-medium mt-8 mb-3" {...props} />
   ),
   h3: (props: HeadingProps) => (
-    <h3
-      className="text-zinc-200 font-medium mt-8 mb-3"
-      {...props}
-    />
+    <h3 className="text-zinc-200 font-medium mt-8 mb-3" {...props} />
   ),
   h4: (props: HeadingProps) => <h4 className="font-medium" {...props} />,
   p: (props: ParagraphProps) => (
     <p className="text-zinc-300 leading-snug" {...props} />
   ),
   ol: (props: ListProps) => (
-    <ol
-      className="text-zinc-300 list-decimal pl-5 space-y-2"
-      {...props}
-    />
+    <ol className="text-zinc-300 list-decimal pl-5 space-y-2" {...props} />
   ),
   ul: (props: ListProps) => (
-    <ul
-      className="text-zinc-300 list-disc pl-5 space-y-1"
-      {...props}
-    />
+    <ul className="text-zinc-300 list-disc pl-5 space-y-1" {...props} />
   ),
   li: (props: ListItemProps) => <li className="pl-1" {...props} />,
   em: (props: ComponentPropsWithoutRef<"em">) => (
@@ -60,28 +45,52 @@ const components = {
         </Link>
       );
     }
+
     if (href?.startsWith("#")) {
       return (
-        <a href={href} className={className} {...props}>
+        <Link href={href} className={className} {...props}>
           {children}
-        </a>
+        </Link>
       );
     }
+
     return (
-      <a
-        href={href}
+      <Link
+        href={href || "/"}
         target="_blank"
         rel="noopener noreferrer"
         className={className}
         {...props}
       >
         {children}
-      </a>
+      </Link>
     );
   },
-  code: ({ children, ...props }: ComponentPropsWithoutRef<"code">) => {
-    const codeHTML = highlight(children as string);
-    return <code dangerouslySetInnerHTML={{ __html: codeHTML }} {...props} />;
+  code: ({ children, className, ...props }: ComponentPropsWithoutRef<"code">) => {
+    const isCodeBlock = className?.includes("language-");
+    if (isCodeBlock) {
+      const codeHTML = highlight(children as string);
+      return (
+        <code
+          className={className}
+          dangerouslySetInnerHTML={{ __html: codeHTML }}
+          {...props}
+        />
+      );
+    }
+    const text =
+      typeof children === "string" ? children.replace(/^`|`$/g, "") : children;
+    return (
+      <code className={className} {...props}>
+        {text}
+      </code>
+    );
+  },
+  inlineCode: (props: ComponentPropsWithoutRef<"code">) => {
+    const { children, ...rest } = props;
+    const text =
+      typeof children === "string" ? String(children).replace(/^`|`$/g, "") : children;
+    return <code {...rest}>{text}</code>;
   },
   Table: ({ data }: { data: { headers: string[]; rows: string[][] } }) => (
     <table>

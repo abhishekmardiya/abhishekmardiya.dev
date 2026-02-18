@@ -3,7 +3,7 @@
 
 
 @theme {
-  --font-family-sans: 'STIX Two Text', serif;
+  --font-family-sans: ui-sans-serif, system-ui, sans-serif;
   --font-family-mono: ui-monospace, 'Cascadia Code', 'Source Code Pro', Menlo,
     Monaco, 'Courier New', monospace;
 }
@@ -56,9 +56,21 @@ pre {
 code {
   font-family: var(--font-family-mono);
   font-size: 0.875rem;
-  padding: 0.2em 0.4em;
+  padding: 0.2em 0.25em;
   border-radius: 0.3em;
   background-color: var(--color-zinc-800);
+}
+
+/* Inline code in prose: minimal padding to avoid awkward gaps before punctuation */
+.prose :not(pre) > code {
+  padding-inline: 0.15em;
+  margin-inline-end: -0.08em;
+}
+
+/* Remove backticks that Tailwind Typography adds via ::before/::after */
+.prose code::before,
+.prose code::after {
+  content: none;
 }
 
 pre code {

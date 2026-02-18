@@ -45,7 +45,7 @@ export default async function BlogPage({ params }: Props) {
   const components = MDXComponents();
 
   return (
-    <article className="markdown prose max-w-none">
+    <article className="markdown prose prose-invert max-w-none">
       <MDXRemote source={content} components={components} />
     </article>
   );
