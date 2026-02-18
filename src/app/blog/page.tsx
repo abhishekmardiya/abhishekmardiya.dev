@@ -12,9 +12,11 @@ export const metadata: Metadata = {
 export default function BlogPage() {
   return (
     <section>
-      <h1 className="mb-8 text-3xl font-semibold tracking-tighter">Blog</h1>
+      <h1 className="mb-6 text-2xl font-semibold tracking-tighter sm:mb-8 sm:text-3xl">
+        Blog
+      </h1>
 
-      <div className="my-8">
+      <div className="my-6 sm:my-8">
         <BlogLinks />
       </div>
     </section>

@@ -11,17 +11,26 @@ type BlockquoteProps = ComponentPropsWithoutRef<"blockquote">;
 
 const components = {
   h1: (props: HeadingProps) => (
-    <h1 className="font-medium text-4xl text-zinc-200 pt-12 mb-10" {...props} />
+    <h1
+      className="font-medium text-2xl text-zinc-200 pt-8 mb-6 sm:text-4xl sm:pt-12 sm:mb-10"
+      {...props}
+    />
   ),
   h2: (props: HeadingProps) => (
-    <h2 className="text-zinc-200 font-medium mt-8 mb-3" {...props} />
+    <h2
+      className="text-zinc-200 font-medium mt-6 mb-2 text-lg sm:mt-8 sm:mb-3 sm:text-xl"
+      {...props}
+    />
   ),
   h3: (props: HeadingProps) => (
-    <h3 className="text-zinc-200 font-medium mt-8 mb-3" {...props} />
+    <h3
+      className="text-zinc-200 font-medium mt-6 mb-2 text-base sm:mt-8 sm:mb-3 sm:text-lg"
+      {...props}
+    />
   ),
   h4: (props: HeadingProps) => <h4 className="font-medium" {...props} />,
   p: (props: ParagraphProps) => (
-    <p className="text-zinc-300 leading-snug" {...props} />
+    <p className="text-zinc-300 text-[15px] leading-relaxed sm:text-base sm:leading-snug" {...props} />
   ),
   ol: (props: ListProps) => (
     <ol className="text-zinc-300 list-decimal pl-5 space-y-2" {...props} />
@@ -114,7 +123,7 @@ const components = {
   ),
   blockquote: (props: BlockquoteProps) => (
     <blockquote
-      className="ml-[0.075em] border-l-3 border-zinc-600 pl-4 text-zinc-300"
+      className="ml-[0.075em] border-l-3 border-zinc-600 pl-3 sm:pl-4 text-zinc-300 text-[15px] sm:text-base"
       {...props}
     />
   ),
