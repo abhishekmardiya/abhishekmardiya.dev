@@ -9,11 +9,12 @@
 }
 
 :root {
+  --sh-identifier: #e6edf3;
   --sh-class: #7aa2f7;
   --sh-sign: #89ddff;
   --sh-string: #9ece6a;
   --sh-keyword: #bb9af7;
-  --sh-comment: #565f89;
+  --sh-comment: #8b949e;
   --sh-jsxliterals: #7aa2f7;
   --sh-property: #73daca;
   --sh-entity: #e0af68;
@@ -88,8 +89,8 @@ pre code {
   line-height: 1.5;
 }
 
-pre code > span .sh__token--identifier {
-  color: white !important;
+pre code .sh__token--identifier {
+  color: var(--sh-identifier) !important;
 }
 
 code:not(pre code) span {
