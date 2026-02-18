@@ -16,7 +16,7 @@ export const metadata: Metadata = {
     canonical: "/",
   },
   title: {
-    default: "Abhishek Mardiya",
+    default: "Abhishek Mardiya | Software Developer Engineer",
     template: "%s | Abhishek Mardiya",
   },
   description: "My portfolio, blog, and personal website.",

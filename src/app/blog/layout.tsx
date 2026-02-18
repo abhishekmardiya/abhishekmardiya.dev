@@ -6,9 +6,9 @@ export default function BlogLayout({ children }: { children: ReactNode }) {
     <>
       <Link
         href="/"
-        className="text-sm text-zinc-400 hover:text-zinc-100 transition-all mb-6"
+        className="text-sm text-zinc-400 hover:text-zinc-100 transition-all my-6 block"
       >
-        ← Back
+        ← Go Home
       </Link>
       {children}
     </>
