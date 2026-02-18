@@ -1,8 +1,8 @@
 import Link from "next/link";
-import { formatSlugToTitle, getAllBlogRoutes } from "@/utils";
+import { formatSlugToTitle, getAllSlug } from "@/utils";
 
 export const BlogLinks = async () => {
-  const { blogRoutes } = await getAllBlogRoutes();
+  const { blogRoutes } = await getAllSlug();
 
   return (
     <ul className="text-zinc-300 pl-5 space-y-1 list-disc">

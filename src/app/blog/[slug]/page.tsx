@@ -3,17 +3,16 @@ import { notFound } from "next/navigation";
 import { MDXRemote } from "next-mdx-remote/rsc";
 import { MDXComponents } from "@/component/MDXComponents";
 import { SITE_URL } from "@/constants";
-import { formatSlugToTitle, getBlogSlugs, readBlogMDXFile } from "@/utils";
+import { formatSlugToTitle, getAllSlug, readBlogMDXFile } from "@/utils";
 
 type Props = {
   params: Promise<{ slug: string }>;
 };
 
 export async function generateStaticParams() {
-  const slugs = await getBlogSlugs();
-  const ssgSlugs = slugs.map((slug) => ({ slug }));
+  const { blogRoutes } = await getAllSlug();
 
-  return ssgSlugs;
+  return blogRoutes.map((slug) => ({ slug: slug.replace("/blog/", "") }));
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {

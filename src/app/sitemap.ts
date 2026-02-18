@@ -1,12 +1,12 @@
 import type { MetadataRoute } from "next";
 import { SITE_URL } from "@/constants";
-import { getAllBlogRoutes } from "@/utils";
+import { getAllSlug } from "@/utils";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const { allRoutes } = await getAllBlogRoutes();
+  const { allRoutes } = await getAllSlug();
 
   return allRoutes.map((slug) => ({
-    url: `${SITE_URL}${slug === "" ? "" : `/${slug}`}`,
+    url: `${SITE_URL}${slug === "" ? "" : slug}`,
     lastModified: new Date().toISOString(),
   }));
 }

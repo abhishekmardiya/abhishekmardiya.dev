@@ -9,7 +9,7 @@ export default function Page() {
 
       <p>
         {
-          "I'm a developer dedicated to writing clean, maintainable code. I enjoy sharing insights about JavaScript patterns, optimization techniques, and practical strategies for building efficient and reliable projects. When I'm not coding, you'll find me relaxing with a good movie or TV series."
+          "I'm Abhishek a Software Developer Engineer focused on building scalable, high-performance web applications.I enjoy working with modern JavaScript ecosystems, crafting clean architecture, and turning complex problems into simple, efficient solutions. I'm passionate about continuous learning and building products that deliver real impact."
         }
       </p>
 

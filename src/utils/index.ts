@@ -1,7 +1,10 @@
 import { promises as fs } from "node:fs";
 import path from "node:path";
 
-export const getBlogSlugs = async (): Promise<string[]> => {
+export const getAllSlug = async (): Promise<{
+  blogRoutes: string[];
+  allRoutes: string[];
+}> => {
   const contentDir = path.join(process.cwd(), "src", "content", "posts");
   const entries = await fs.readdir(contentDir, { withFileTypes: true });
 
@@ -12,21 +15,14 @@ export const getBlogSlugs = async (): Promise<string[]> => {
         const pagePath = path.join(contentDir, entry.name, "page.mdx");
         try {
           await fs.access(pagePath);
-          return `blog/${entry.name}`;
+          return `/blog/${entry.name}`;
         } catch {
           return null;
         }
       }),
   );
 
-  return slugs.filter((slug): slug is string => slug !== null);
-};
-
-export const getAllBlogRoutes = async (): Promise<{
-  blogRoutes: string[];
-  allRoutes: string[];
-}> => {
-  const blogRoutes = await getBlogSlugs();
+  const blogRoutes = slugs.filter((slug): slug is string => slug !== null);
 
   return {
     blogRoutes,
