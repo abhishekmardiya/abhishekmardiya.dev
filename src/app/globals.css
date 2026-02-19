@@ -22,6 +22,7 @@
 
 html {
   min-width: 320px;
+  scroll-behavior: smooth;
   scrollbar-gutter: stable;
 }
 
@@ -41,6 +42,15 @@ body {
 .prose h3,
 .prose h4 {
   line-height: 1.75 !important;
+}
+
+/* Tight spacing between h1 and DateStamp */
+.prose h1 {
+  margin-bottom: 0 !important;
+}
+
+.prose h1 + p {
+  margin-top: -0.1rem !important;
 }
 
 /* Blockquotes: remove default italic and quotation marks, make bold */

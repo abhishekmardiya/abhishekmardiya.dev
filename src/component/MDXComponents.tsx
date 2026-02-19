@@ -1,83 +1,82 @@
 import Image from "next/image";
 import Link from "next/link";
-import type { ComponentPropsWithoutRef } from "react";
+import type { ComponentPropsWithoutRef, ReactNode } from "react";
 import { highlight } from "sugar-high";
+import { slugify } from "@/utils";
 import { CopyCodeBlock } from "./CopyCodeBlock";
+
+function getHeadingSlug(children: ReactNode): string {
+  if (typeof children === "string") {
+    return children;
+  }
+
+  return "";
+}
 
 type HeadingProps = ComponentPropsWithoutRef<"h1">;
 type ParagraphProps = ComponentPropsWithoutRef<"p">;
 type ListProps = ComponentPropsWithoutRef<"ul">;
 type ListItemProps = ComponentPropsWithoutRef<"li">;
-type AnchorProps = ComponentPropsWithoutRef<"a">;
 type BlockquoteProps = ComponentPropsWithoutRef<"blockquote">;
 
 const components = {
   h1: (props: HeadingProps) => (
     <h1
-      className="font-medium text-2xl text-zinc-200 pt-8 mb-6 sm:text-4xl sm:pt-12 sm:mb-10"
+      className="font-medium text-2xl text-zinc-200 sm:text-4xl pt-6 mb-0!"
       {...props}
     />
   ),
-  h2: (props: HeadingProps) => (
-    <h2
-      className="text-zinc-200 font-medium mt-6 mb-2 text-lg sm:mt-8 sm:mb-3 sm:text-xl"
-      {...props}
-    />
-  ),
+  h2: ({ children, ...props }: HeadingProps) => {
+    const slug = slugify(getHeadingSlug(children));
+
+    return (
+      <h2
+        id={slug}
+        className="group text-zinc-200 font-medium mt-6 mb-2 text-xl sm:mt-8 sm:mb-3 sm:text-2xl scroll-mt-6 flex items-center gap-2 cursor-pointer max-w-fit"
+        {...props}
+      >
+        <Link
+          href={`#${slug}`}
+          className="ml-1 inline-flex shrink-0 items-center gap-2 justify-center rounded p-0.5 no-underline"
+          aria-label={`Link to section: ${getHeadingSlug(children)}`}
+        >
+          <span>{children}</span>
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            className="size-4 opacity-0 group-hover:opacity-100 transition-opacity duration-150"
+            aria-hidden
+          >
+            <title>Link to section</title>
+            <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71" />
+            <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71" />
+          </svg>
+        </Link>
+      </h2>
+    );
+  },
   h3: (props: HeadingProps) => (
     <h3
       className="text-zinc-200 font-medium mt-6 mb-2 text-base sm:mt-8 sm:mb-3 sm:text-lg"
       {...props}
     />
   ),
-  h4: (props: HeadingProps) => <h4 className="font-medium" {...props} />,
   p: (props: ParagraphProps) => (
     <p className="text-zinc-300 text-[15px] sm:text-base" {...props} />
-  ),
-  ol: (props: ListProps) => (
-    <ol className="text-zinc-300 list-decimal pl-5 space-y-2" {...props} />
   ),
   ul: (props: ListProps) => (
     <ul className="text-zinc-300 list-disc pl-5 space-y-1" {...props} />
   ),
   li: (props: ListItemProps) => <li className="pl-1" {...props} />,
-  em: (props: ComponentPropsWithoutRef<"em">) => (
-    <em className="font-medium" {...props} />
-  ),
   strong: (props: ComponentPropsWithoutRef<"strong">) => (
     <strong className="font-medium" {...props} />
   ),
   pre: (props: ComponentPropsWithoutRef<"pre">) => <CopyCodeBlock {...props} />,
-  a: ({ href, children, ...props }: AnchorProps) => {
-    const className = "underline hover:text-blue-500";
-    if (href?.startsWith("/")) {
-      return (
-        <Link href={href} className={className} {...props}>
-          {children}
-        </Link>
-      );
-    }
-
-    if (href?.startsWith("#")) {
-      return (
-        <Link href={href} className={className} {...props}>
-          {children}
-        </Link>
-      );
-    }
-
-    return (
-      <Link
-        href={href || "/"}
-        target="_blank"
-        rel="noopener noreferrer"
-        className={className}
-        {...props}
-      >
-        {children}
-      </Link>
-    );
-  },
   code: ({
     children,
     className,
@@ -110,47 +109,12 @@ const components = {
         : children;
     return <code {...rest}>{text}</code>;
   },
-  Table: ({ data }: { data: { headers: string[]; rows: string[][] } }) => (
-    <table>
-      <thead>
-        <tr>
-          {data.headers.map((header, index) => (
-            <th key={index}>{header}</th>
-          ))}
-        </tr>
-      </thead>
-      <tbody>
-        {data.rows.map((row, index) => (
-          <tr key={index}>
-            {row.map((cell, cellIndex) => (
-              <td key={cellIndex}>{cell}</td>
-            ))}
-          </tr>
-        ))}
-      </tbody>
-    </table>
-  ),
   blockquote: (props: BlockquoteProps) => (
     <blockquote
-      className="ml-[0.075em] border-l-3 border-zinc-600 pl-3 sm:pl-4 text-[15px] sm:text-base text-zinc-400 [&_*]:!text-zinc-400"
+      className="ml-[0.075em] border-l-3 border-zinc-600 pl-3 sm:pl-4 text-[15px] sm:text-base text-zinc-400 **:text-zinc-400!"
       {...props}
     />
   ),
-  img: (props: ComponentPropsWithoutRef<"img">) => {
-    const { src, alt } = props;
-    const srcString = typeof src === "string" ? src : "/";
-    return (
-      <span className="block relative w-full aspect-video my-6 overflow-hidden rounded-lg bg-zinc-800/50">
-        <Image
-          src={srcString}
-          alt={alt ?? ""}
-          fill
-          className="object-contain"
-          unoptimized={process.env.VERCEL_ENV !== "production"}
-        />
-      </span>
-    );
-  },
   Image: (
     props: ComponentPropsWithoutRef<typeof Image> & {
       width?: number;
@@ -158,8 +122,20 @@ const components = {
     },
   ) => {
     const { width = 800, height = 450, ...rest } = props;
-    return <Image width={width} height={height} {...rest} />;
+    return (
+      <Image
+        width={width}
+        height={height}
+        unoptimized={process.env.VERCEL_ENV !== "production"}
+        {...rest}
+      />
+    );
   },
+  DateStamp: ({ children, ...props }: ComponentPropsWithoutRef<"p">) => (
+    <p className="text-zinc-500 text-sm pb-4" {...props}>
+      {children}
+    </p>
+  ),
 };
 
 declare global {

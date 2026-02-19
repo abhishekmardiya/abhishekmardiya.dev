@@ -6,9 +6,10 @@ export default function BlogLayout({ children }: { children: ReactNode }) {
     <>
       <Link
         href="/"
-        className="text-sm text-zinc-400 hover:text-zinc-100 active:text-zinc-200 transition-all my-4 block py-2 min-h-[44px] flex items-center w-fit sm:my-6"
+        className="text-sm gap-1.5 items-center text-zinc-400 hover:text-zinc-100 active:text-zinc-200 transition-all py-2 flex w-fit"
       >
-        ← Go Home
+        <span> ← </span>
+        Go Home
       </Link>
       {children}
     </>

@@ -7,7 +7,7 @@ export const Footer = () => {
   ];
 
   return (
-    <footer className="mt-8 px-4 text-center sm:mt-12">
+    <footer className="mt-18 px-4 text-center sm:mt-22">
       <div className="flex flex-wrap justify-center gap-4 gap-y-3 tracking-tight">
         {links.map((link) => (
           <Link
@@ -15,7 +15,7 @@ export const Footer = () => {
             href={link.url}
             target="_blank"
             rel="noopener noreferrer"
-            className="text-zinc-400 hover:text-blue-500 active:text-blue-400 transition-all duration-200 inline-flex items-center min-h-[44px] py-2 px-3"
+            className="text-zinc-400 hover:text-blue-500 active:text-blue-400 transition-all duration-200 inline-flex items-center min-h-11 py-2 px-3"
           >
             {link.name}
           </Link>
