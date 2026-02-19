@@ -27,6 +27,32 @@ html {
 
 body {
   text-rendering: optimizeLegibility;
+  line-height: 1.75;
+}
+
+/* Override typography plugin and component line-heights for consistent spacing */
+.prose p,
+.prose li,
+.prose blockquote,
+.prose td,
+.prose th,
+.prose h1,
+.prose h2,
+.prose h3,
+.prose h4 {
+  line-height: 1.75 !important;
+}
+
+/* Blockquotes: remove default italic and quotation marks, make bold */
+.prose blockquote {
+  font-style: normal;
+  font-weight: 600;
+  quotes: none;
+}
+
+.prose blockquote p:first-of-type::before,
+.prose blockquote p:last-of-type::after {
+  content: none;
 }
 
 h1,

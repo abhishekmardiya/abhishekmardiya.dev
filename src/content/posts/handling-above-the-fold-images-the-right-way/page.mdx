@@ -11,7 +11,6 @@ When image is lazy loaded, browsers defer loading until the image nears the view
 Mark above-the-fold images as eager:
 
 - **`loading="eager"`** — Tells the browser to fetch the image right away instead of waiting.
-
 - **`fetchpriority="high"`** — Add this only when the image is the LCP element
 
 ```html
@@ -28,7 +27,12 @@ Or with Next.js `Image`:
 ```tsx
 import Image from "next/image";
 
-<Image src="/hero.jpg" alt="Hero" loading="eager" /> // default is "lazy"
+<Image 
+  src="/hero.jpg" 
+  alt="Hero" 
+  loading="eager" // default is "lazy"
+  fetchpriority="high" // default is "auto"
+/>
 ```
 
 Note: Starting with `Next.js 16`, the `priority` property has been deprecated.
@@ -36,7 +40,51 @@ Note: Starting with `Next.js 16`, the `priority` property has been deprecated.
 ## Rule of Thumb
 
 - **Above the fold:** `loading="eager"` (If the image is the LCP element, also add `fetchpriority="high"`)
-
 - **Below the fold:** Keep `loading="lazy"`
 
-Keep the first image or two eager; lazy load the rest.
+
+## How to use `fetchpriority` correctly
+
+If you set `fetchpriority="high"` on all images:
+
+- **Browser loses prioritization signal** — There's no hierarchy for the browser to follow
+- **Everything becomes equally urgent** — The browser can't tell what actually matters
+- **LCP might actually slow down** — Competing high-priority fetches can delay the real LCP element
+
+Priority hints only work when used selectively. Reserve `fetchpriority="high"` for your single LCP image (usually the hero or first meaningful image).
+
+## See it in action
+
+<Image src="/lcp-example.png" alt="Layout with one large image and four thumbnails" width={800} height={450} loading="eager" fetchPriority="high" />
+
+Consider a layout with 1 large main image on the left and 4 smaller thumbnails on the right, all visible immediately (above the fold).
+
+**Should you give high priority to all 5 images?**
+
+> Short answer: No.
+
+### Main Large Image
+
+This is almost certainly your LCP element.
+
+| Attribute | Value |
+| --- | --- |
+| `loading` | `eager` |
+| `fetchpriority` | `high` |
+
+It is the biggest, dominates the viewport, and will likely be measured as LCP.
+
+### The 4 Side Thumbnails
+
+Above-the-fold thumbnails, not LCP.
+
+| Attribute | Value |
+| --- | --- |
+| `loading` | `eager` |
+| `fetchpriority` | `auto` |
+
+Eager load them so they appear quickly, but leave `fetchpriority` as `auto` so the browser prioritizes the main LCP image first.
+
+## Wrap Up
+
+A solid image loading strategy can noticeably improve performance. The browser gets clear signals on what matters most, and users see key content sooner. **Small tweaks, better Core Web Vitals.**

@@ -1,0 +1,3 @@
+- Add support for sending markdown-formatted CURL requests to agents
+- Add json+ld
+- Add open search support

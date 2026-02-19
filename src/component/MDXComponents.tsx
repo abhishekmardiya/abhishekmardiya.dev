@@ -1,6 +1,8 @@
+import Image from "next/image";
 import Link from "next/link";
 import type { ComponentPropsWithoutRef } from "react";
 import { highlight } from "sugar-high";
+import { CopyCodeBlock } from "./CopyCodeBlock";
 
 type HeadingProps = ComponentPropsWithoutRef<"h1">;
 type ParagraphProps = ComponentPropsWithoutRef<"p">;
@@ -30,7 +32,7 @@ const components = {
   ),
   h4: (props: HeadingProps) => <h4 className="font-medium" {...props} />,
   p: (props: ParagraphProps) => (
-    <p className="text-zinc-300 text-[15px] leading-relaxed sm:text-base sm:leading-snug" {...props} />
+    <p className="text-zinc-300 text-[15px] sm:text-base" {...props} />
   ),
   ol: (props: ListProps) => (
     <ol className="text-zinc-300 list-decimal pl-5 space-y-2" {...props} />
@@ -45,6 +47,7 @@ const components = {
   strong: (props: ComponentPropsWithoutRef<"strong">) => (
     <strong className="font-medium" {...props} />
   ),
+  pre: (props: ComponentPropsWithoutRef<"pre">) => <CopyCodeBlock {...props} />,
   a: ({ href, children, ...props }: AnchorProps) => {
     const className = "underline hover:text-blue-500";
     if (href?.startsWith("/")) {
@@ -75,7 +78,11 @@ const components = {
       </Link>
     );
   },
-  code: ({ children, className, ...props }: ComponentPropsWithoutRef<"code">) => {
+  code: ({
+    children,
+    className,
+    ...props
+  }: ComponentPropsWithoutRef<"code">) => {
     const isCodeBlock = className?.includes("language-");
     if (isCodeBlock) {
       const codeHTML = highlight(children as string);
@@ -98,7 +105,9 @@ const components = {
   inlineCode: (props: ComponentPropsWithoutRef<"code">) => {
     const { children, ...rest } = props;
     const text =
-      typeof children === "string" ? String(children).replace(/^`|`$/g, "") : children;
+      typeof children === "string"
+        ? String(children).replace(/^`|`$/g, "")
+        : children;
     return <code {...rest}>{text}</code>;
   },
   Table: ({ data }: { data: { headers: string[]; rows: string[][] } }) => (
@@ -123,10 +132,34 @@ const components = {
   ),
   blockquote: (props: BlockquoteProps) => (
     <blockquote
-      className="ml-[0.075em] border-l-3 border-zinc-600 pl-3 sm:pl-4 text-zinc-300 text-[15px] sm:text-base"
+      className="ml-[0.075em] border-l-3 border-zinc-600 pl-3 sm:pl-4 text-[15px] sm:text-base text-zinc-400 [&_*]:!text-zinc-400"
       {...props}
     />
   ),
+  img: (props: ComponentPropsWithoutRef<"img">) => {
+    const { src, alt } = props;
+    const srcString = typeof src === "string" ? src : "/";
+    return (
+      <span className="block relative w-full aspect-video my-6 overflow-hidden rounded-lg bg-zinc-800/50">
+        <Image
+          src={srcString}
+          alt={alt ?? ""}
+          fill
+          className="object-contain"
+          unoptimized={process.env.VERCEL_ENV !== "production"}
+        />
+      </span>
+    );
+  },
+  Image: (
+    props: ComponentPropsWithoutRef<typeof Image> & {
+      width?: number;
+      height?: number;
+    },
+  ) => {
+    const { width = 800, height = 450, ...rest } = props;
+    return <Image width={width} height={height} {...rest} />;
+  },
 };
 
 declare global {
