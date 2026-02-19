@@ -4,20 +4,22 @@ Images in the viewport on first paint should load immediately. Lazy loading them
 
 ## The Problem
 
-`loading="lazy"` is the default for images. Browsers defer loading until the image nears the viewport. That's great for images further down the page—but for hero images, thumbnails, or any image visible without scrolling, it delays the Largest Contentful Paint (LCP) and feels sluggish.
+When image is lazy loaded, browsers defer loading until the image nears the viewport. That's great for images further down the page—but for hero images, thumbnails, or any image visible without scrolling, it delays the Largest Contentful Paint (LCP) and feels sluggish.
 
 ## The Fix
 
 Mark above-the-fold images as eager:
 
-- **`loading="eager"`** — Tells the browser to fetch the image right away instead of waiting. It's the opposite of `loading="lazy"`, which defers loading until the image is near the viewport.
+- **`loading="eager"`** — Tells the browser to fetch the image right away instead of waiting.
+
+- **`fetchpriority="high"`** — Add this only when the image is the LCP element
 
 ```html
 <img
   src="/hero.jpg"
   alt="Hero"
-  loading="eager"
-  fetchpriority="high"  // Add this only when the image is the LCP element
+  loading="eager" // default is "eager"
+  fetchpriority="high" // default is "auto"
 />
 ```
 
@@ -26,14 +28,15 @@ Or with Next.js `Image`:
 ```tsx
 import Image from "next/image";
 
-<Image src="/hero.jpg" alt="Hero" loading="eager"/>
+<Image src="/hero.jpg" alt="Hero" loading="eager" /> // default is "lazy"
 ```
 
 Note: Starting with `Next.js 16`, the `priority` property has been deprecated.
 
 ## Rule of Thumb
 
-- **Above the fold:** `loading="eager"`
-- **Below the fold:** Keep `loading="lazy"` (the default)
+- **Above the fold:** `loading="eager"` (If the image is the LCP element, also add `fetchpriority="high"`)
+
+- **Below the fold:** Keep `loading="lazy"`
 
 Keep the first image or two eager; lazy load the rest.
