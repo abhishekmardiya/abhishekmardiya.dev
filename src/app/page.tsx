@@ -13,7 +13,7 @@ export const metadata: Metadata = {
 export default function Page() {
   return (
     <section>
-      <h1 className="mb-6 text-xl font-semibold tracking-tighter sm:mb-8 sm:text-2xl">
+      <h1 className="sm:mt-6 mb-6 text-xl font-semibold tracking-tighter sm:mb-8 sm:text-2xl">
         Abhishek Mardiya
       </h1>
 

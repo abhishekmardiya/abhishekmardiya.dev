@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { MDXRemote } from "next-mdx-remote/rsc";
 import remarkGfm from "remark-gfm";
 import { CopyPageButton } from "@/component/CopyPageButton";
+import { GoHomeLink } from "@/component/GoHomeLink";
 import { MDXComponents } from "@/component/MDXComponents";
 import { SITE_URL } from "@/constants";
 import { formatSlugToTitle, getAllSlug, readBlogMDXFile } from "@/utils";
@@ -22,18 +23,40 @@ export async function generateStaticParams() {
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
 
-  try {
-    const title = formatSlugToTitle(slug);
-
-    return {
-      title,
-      alternates: {
-        canonical: `${SITE_URL}/blog/${slug}`,
-      },
-    };
-  } catch {
+  if (!slug) {
     return { title: "Blog Post Not Found" };
   }
+
+  const title = formatSlugToTitle(slug);
+  const ogImage = `${SITE_URL}/og?title=${encodeURIComponent(title)}`;
+  const fullSlug = `${SITE_URL}/blog/${slug}`;
+  const description = "Blog post description";
+
+  return {
+    title,
+    alternates: {
+      canonical: fullSlug,
+    },
+    description,
+    openGraph: {
+      title,
+      description,
+      type: "article",
+      // publishedTime,
+      url: fullSlug,
+      images: [
+        {
+          url: ogImage,
+        },
+      ],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title,
+      description,
+      images: [ogImage],
+    },
+  };
 }
 
 export default async function BlogPage({ params }: Props) {
@@ -50,7 +73,8 @@ export default async function BlogPage({ params }: Props) {
 
   return (
     <div className="space-y-4">
-      <div className="flex justify-end">
+      <div className="sm:mt-10 flex items-center justify-between">
+        <GoHomeLink />
         <CopyPageButton content={content} />
       </div>
       <article className="markdown prose prose-sm prose-invert max-w-none sm:prose-base">

@@ -6,7 +6,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const { allRoutes } = await getAllSlug();
 
   return allRoutes.map((slug) => ({
-    url: `${SITE_URL}${slug === "" ? "" : slug}`,
+    url: `${SITE_URL}${slug}`,
     lastModified: new Date().toISOString(),
   }));
 }

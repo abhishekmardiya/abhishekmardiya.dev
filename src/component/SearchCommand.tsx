@@ -52,6 +52,26 @@ const DocumentIcon = ({ className }: { className?: string }) => (
   </svg>
 );
 
+const SearchIcon = ({ className }: { className?: string }) => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="16"
+    height="16"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    className={className}
+    aria-hidden="true"
+  >
+    <title>Search</title>
+    <circle cx="11" cy="11" r="8" />
+    <path d="m21 21-4.3-4.3" />
+  </svg>
+);
+
 const HashIcon = ({ className }: { className?: string }) => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
@@ -183,10 +203,13 @@ export function SearchCommand() {
         onClick={() => {
           setOpen(true);
         }}
-        className="inline-flex min-w-44 items-center justify-between gap-2 rounded-md border border-zinc-700 bg-zinc-900/80 px-4 py-2 text-sm text-zinc-400 transition-colors hover:border-zinc-600 hover:text-zinc-200 cursor-pointer"
+        className="inline-flex min-w-fit items-center justify-between gap-2 rounded-md border border-zinc-700 bg-zinc-900/80 px-4 py-2 text-sm text-zinc-400 transition-colors hover:border-zinc-600 hover:text-zinc-200 cursor-pointer sm:gap-10"
         aria-label="Search blog (⌘K)"
       >
-        <span>Search blog...</span>
+        <span className="flex items-center gap-2">
+          <SearchIcon className="size-4 shrink-0 sm:hidden" />
+          Search blog...
+        </span>
         <kbd className="hidden font-mono text-xs sm:inline-block">⌘K</kbd>
       </button>
 
@@ -223,7 +246,7 @@ export function SearchCommand() {
                         {group.title}
                       </span>
                       {group.excerpt && (
-                        <span className="line-clamp-1 pl-6 text-xs text-zinc-500">
+                        <span className="line-clamp-1 pl-6 text-xs text-zinc-400">
                           {group.excerpt}
                         </span>
                       )}
@@ -241,7 +264,7 @@ export function SearchCommand() {
                           <HashIcon className="size-4 shrink-0 text-zinc-500" />
                           {section.heading}
                         </span>
-                        <span className="line-clamp-1 pl-6 text-xs text-zinc-500">
+                        <span className="line-clamp-1 pl-6 text-xs text-zinc-400">
                           {section.snippet}
                         </span>
                       </CommandItem>

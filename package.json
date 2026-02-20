@@ -3,12 +3,12 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
+    "search-index": "node scripts/build-search-index.mjs",
+    "dev": "npm run search-index &&next dev",
     "ts": "tsc --noEmit --watch",
     "lint": "biome check",
     "format": "biome format --write",
-    "search-index": "node scripts/build-search-index.mjs",
-    "build": "node scripts/build-search-index.mjs && next build",
+    "build": "npm run search-index && next build",
     "start": "next start"
   },
   "dependencies": {
