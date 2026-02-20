@@ -5,12 +5,21 @@ import { highlight } from "sugar-high";
 import { slugify } from "@/utils";
 import { CopyCodeBlock } from "./CopyCodeBlock";
 
-function getHeadingSlug(children: ReactNode): string {
-  if (typeof children === "string") {
-    return children;
+function getHeadingText(node: ReactNode): string {
+  if (typeof node === "string" || typeof node === "number") {
+    return String(node);
   }
-
+  if (Array.isArray(node)) {
+    return node.map(getHeadingText).join("");
+  }
+  if (node && typeof node === "object" && "props" in node && node.props) {
+    return getHeadingText((node.props as { children?: ReactNode }).children);
+  }
   return "";
+}
+
+function getHeadingSlug(children: ReactNode): string {
+  return getHeadingText(children);
 }
 
 type HeadingProps = ComponentPropsWithoutRef<"h1">;
@@ -60,12 +69,18 @@ const components = {
       </h2>
     );
   },
-  h3: (props: HeadingProps) => (
-    <h3
-      className="text-zinc-200 font-medium mt-6 mb-2 text-base sm:mt-8 sm:mb-3 sm:text-lg"
-      {...props}
-    />
-  ),
+  h3: ({ children, ...props }: HeadingProps) => {
+    const slug = slugify(getHeadingSlug(children));
+    return (
+      <h3
+        id={slug}
+        className="text-zinc-200 font-medium mt-6 mb-2 text-base scroll-mt-6 sm:mt-8 sm:mb-3 sm:text-lg"
+        {...props}
+      >
+        {children}
+      </h3>
+    );
+  },
   p: (props: ParagraphProps) => (
     <p className="text-zinc-300 text-[15px] sm:text-base" {...props} />
   ),

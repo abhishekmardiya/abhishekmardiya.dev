@@ -5,12 +5,15 @@
   "scripts": {
     "dev": "next dev",
     "ts": "tsc --noEmit --watch",
-    "build": "next build",
-    "start": "next start",
     "lint": "biome check",
-    "format": "biome format --write"
+    "format": "biome format --write",
+    "search-index": "node scripts/build-search-index.mjs",
+    "build": "node scripts/build-search-index.mjs && next build",
+    "start": "next start"
   },
   "dependencies": {
+    "cmdk": "^1.1.1",
+    "flexsearch": "^0.8.212",
     "next": "16.1.6",
     "next-mdx-remote": "^6.0.0",
     "react": "19.2.3",
