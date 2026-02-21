@@ -6,9 +6,9 @@ import { getSeoMetaData } from "@/utils";
 
 export async function generateMetadata(): Promise<Metadata> {
   const title = `${SITE_CONSTANTS.siteName} | ${SITE_CONSTANTS.profession}`;
-  const description = `${SITE_CONSTANTS.siteName} — ${SITE_CONSTANTS.profession}. Portfolio, blog, and technical articles on web development, performance, and building scalable applications.`;
+  const description = `Portfolio, blog, and technical articles on web development, performance, and building scalable applications.`;
 
-  const ogImage = `${SITE_CONSTANTS.siteUrl}/og?title=${encodeURIComponent(`Blog | ${description}`)}`;
+  const ogImage = `${SITE_CONSTANTS.siteUrl}/og?title=${encodeURIComponent(title)}`;
 
   const { finalMetadata } = getSeoMetaData({
     title,

@@ -142,8 +142,9 @@ const components = {
       <Image
         width={width}
         height={height}
-        unoptimized={process.env.VERCEL_ENV !== "production"}
+        unoptimized
         {...rest}
+        className="rounded-md"
       />
     );
   },
