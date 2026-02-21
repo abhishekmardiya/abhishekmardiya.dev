@@ -15,6 +15,7 @@ export const BlogLinks = async ({
         .map((slug) => (
           <li key={slug} className="pl-1">
             <Link
+              // @ts-expect-error
               href={slug}
               className="underline text-[15px] hover:text-blue-500 active:text-blue-400 block py-2.5 sm:text-base sm:py-1"
             >

@@ -1,9 +1,12 @@
 import { ImageResponse } from "next/og";
 import type { NextRequest } from "next/server";
+import { SITE_CONSTANTS } from "@/constants";
 
 export function GET(request: NextRequest) {
   const url = new URL(request.url);
-  const title = url.searchParams.get("title") || "Abhishek Mardiya | Blog Post";
+  const title =
+    url.searchParams.get("title") || `${SITE_CONSTANTS.siteName} | Blog Post`;
+  console.log("title:", title);
 
   return new ImageResponse(
     <div
@@ -15,7 +18,7 @@ export function GET(request: NextRequest) {
         tw="absolute left-12 top-12 flex items-center justify-center rounded-full bg-black text-white text-xl font-black"
         style={{ width: 48, height: 48 }}
       >
-        Abhishek Mardiya
+        AM
       </div>
 
       {/* Bold, thick centered text */}
@@ -29,7 +32,9 @@ export function GET(request: NextRequest) {
       >
         {title}
       </h1>
-      <p tw="mt-4 text-xl text-gray-600 font-medium">Abhishek Mardiya</p>
+      <p tw="mt-4 text-xl text-gray-600 font-medium">
+        {SITE_CONSTANTS.siteName}
+      </p>
     </div>,
     {
       width: 1200,

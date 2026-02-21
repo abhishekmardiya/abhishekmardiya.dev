@@ -1,9 +1,10 @@
 import Link from "next/link";
+import { SITE_CONSTANTS } from "@/constants";
 
 export const Footer = () => {
   const links = [
-    { name: "Linkedin", url: "https://in/abhishek-mardiya-2a82a3147" },
-    { name: "GitHub", url: "https://github.com/abhishekmardiya" },
+    { name: "Linkedin", url: SITE_CONSTANTS.linkedinUrl },
+    { name: "GitHub", url: SITE_CONSTANTS.githubUrl },
   ];
 
   return (
@@ -12,6 +13,7 @@ export const Footer = () => {
         {links.map((link) => (
           <Link
             key={link.name}
+            // @ts-expect-error
             href={link.url}
             target="_blank"
             rel="noopener noreferrer"

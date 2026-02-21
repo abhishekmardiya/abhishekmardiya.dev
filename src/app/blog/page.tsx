@@ -1,14 +1,26 @@
 import type { Metadata } from "next";
 import { BlogLinks } from "@/component/BlogLinks";
 import { GoHomeLink } from "@/component/GoHomeLink";
-import { SITE_URL } from "@/constants";
+import { SITE_CONSTANTS } from "@/constants";
+import { getSeoMetaData } from "@/utils";
 
-export const metadata: Metadata = {
-  title: "Blog",
-  alternates: {
-    canonical: `${SITE_URL}/blog`,
-  },
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const title = "Blog";
+  const description =
+    "Thoughts on web development, performance optimization, and frontend best practices.";
+
+  const ogImage = `${SITE_CONSTANTS.siteUrl}/og?title=${encodeURIComponent(`Blog | ${description}`)}`;
+
+  const { finalMetadata } = getSeoMetaData({
+    title,
+    description,
+    wholeSlug: "/blog",
+    ogImage,
+    isFromBlogPage: true,
+  });
+
+  return finalMetadata;
+}
 
 export default function BlogPage() {
   return (

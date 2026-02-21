@@ -54,7 +54,7 @@ const extractSections = (content, snippetMaxLength = 80) => {
 };
 
 const buildSearchIndex = async () => {
-  const contentDir = join(process.cwd(), "src", "content", "posts");
+  const contentDir = join(process.cwd(), "src", "posts");
   const entries = await readdir(contentDir, { withFileTypes: true });
 
   const docs = [];

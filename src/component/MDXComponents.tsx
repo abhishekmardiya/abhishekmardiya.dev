@@ -2,6 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import type { ComponentPropsWithoutRef, ReactNode } from "react";
 import { highlight } from "sugar-high";
+import { SITE_CONSTANTS } from "@/constants";
 import { slugify } from "@/utils";
 import { CopyCodeBlock } from "./CopyCodeBlock";
 
@@ -148,7 +149,7 @@ const components = {
   },
   DateStamp: ({ children, ...props }: ComponentPropsWithoutRef<"p">) => (
     <p className="text-zinc-500 text-sm pb-4" {...props}>
-      {children}
+      {children} - {SITE_CONSTANTS.siteName}
     </p>
   ),
 };

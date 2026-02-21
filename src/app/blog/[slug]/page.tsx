@@ -5,8 +5,14 @@ import remarkGfm from "remark-gfm";
 import { CopyPageButton } from "@/component/CopyPageButton";
 import { GoHomeLink } from "@/component/GoHomeLink";
 import { MDXComponents } from "@/component/MDXComponents";
-import { SITE_URL } from "@/constants";
-import { formatSlugToTitle, getAllSlug, readBlogMDXFile } from "@/utils";
+import { SITE_CONSTANTS } from "@/constants";
+import {
+  extractExcerptFromMdx,
+  formatSlugToTitle,
+  getAllSlug,
+  getSeoMetaData,
+  readBlogMDXFile,
+} from "@/utils";
 
 type Props = {
   params: Promise<{ slug: string }>;
@@ -23,40 +29,28 @@ export async function generateStaticParams() {
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
 
-  if (!slug) {
+  let content: string;
+  try {
+    content = await readBlogMDXFile({ slug });
+  } catch {
     return { title: "Blog Post Not Found" };
   }
 
   const title = formatSlugToTitle(slug);
-  const ogImage = `${SITE_URL}/og?title=${encodeURIComponent(title)}`;
-  const fullSlug = `${SITE_URL}/blog/${slug}`;
-  const description = "Blog post description";
+  const description = extractExcerptFromMdx(content);
+  //  api route
+  const ogImage = `${SITE_CONSTANTS.siteUrl}/og?title=${encodeURIComponent(title)}`;
+  const fullSlug = `/blog/${slug}`;
 
-  return {
+  const { finalMetadata } = getSeoMetaData({
     title,
-    alternates: {
-      canonical: fullSlug,
-    },
     description,
-    openGraph: {
-      title,
-      description,
-      type: "article",
-      // publishedTime,
-      url: fullSlug,
-      images: [
-        {
-          url: ogImage,
-        },
-      ],
-    },
-    twitter: {
-      card: "summary_large_image",
-      title,
-      description,
-      images: [ogImage],
-    },
-  };
+    wholeSlug: fullSlug,
+    ogImage,
+    isFromBlogPage: true,
+  });
+
+  return finalMetadata;
 }
 
 export default async function BlogPage({ params }: Props) {

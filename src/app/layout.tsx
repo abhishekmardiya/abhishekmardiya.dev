@@ -1,27 +1,13 @@
 import { Footer } from "@/component/Footer";
 import { Header } from "@/component/Header";
 import "./globals.css";
-import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import type { ReactNode } from "react";
-import { SITE_URL } from "@/constants";
 
 const inter = Inter({
   subsets: ["latin"],
   display: "swap",
 });
-
-export const metadata: Metadata = {
-  metadataBase: new URL(SITE_URL),
-  alternates: {
-    canonical: "/",
-  },
-  title: {
-    default: "Abhishek Mardiya | Software Developer Engineer",
-    template: "%s | Abhishek Mardiya",
-  },
-  description: "My portfolio, blog, and personal website.",
-};
 
 export default function RootLayout({
   children,
