@@ -17,7 +17,7 @@ export const BlogLinks = async ({
             <Link
               // @ts-expect-error
               href={slug}
-              className="underline text-[15px] hover:text-blue-500 active:text-blue-400 block py-2.5 sm:text-base sm:py-1"
+              className="underline underline-offset-3 decoration-zinc-600 text-[15px] hover:text-blue-500 active:text-blue-400 block py-2.5 sm:text-base sm:py-1"
             >
               {formatSlugToTitle(slug)}
             </Link>
