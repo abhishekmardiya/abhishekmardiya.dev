@@ -2,11 +2,15 @@ import { ImageResponse } from "next/og";
 import type { NextRequest } from "next/server";
 import { SITE_CONSTANTS } from "@/constants";
 
-export function GET(request: NextRequest) {
-  const url = new URL(request.url);
-  const title =
-    url.searchParams.get("title") || `${SITE_CONSTANTS.siteName} | Blog Post`;
-  console.log("title:", title);
+export async function GET(
+  _request: NextRequest,
+  {
+    params,
+  }: {
+    params: Promise<{ title: string }>;
+  },
+) {
+  const { title } = await params;
 
   return new ImageResponse(
     <div

@@ -42,7 +42,7 @@ const components = {
     return (
       <h2
         id={slug}
-        className="group text-zinc-200 font-medium mt-6 mb-2 text-xl sm:mt-8 sm:mb-3 sm:text-2xl scroll-mt-6 flex items-center gap-2 cursor-pointer max-w-fit"
+        className="group text-zinc-200 font-medium mt-6 mb-2 text-xl sm:mt-8 sm:mb-3 sm:text-2xl scroll-mt-20 flex items-center gap-2 cursor-pointer max-w-fit"
         {...props}
       >
         <Link

@@ -2,13 +2,13 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { BlogLinks } from "@/component/BlogLinks";
 import { SITE_CONSTANTS } from "@/constants";
-import { getSeoMetaData } from "@/utils";
+import { getOgImage, getSeoMetaData } from "@/utils";
 
 export async function generateMetadata(): Promise<Metadata> {
   const title = `${SITE_CONSTANTS.siteName} | ${SITE_CONSTANTS.profession}`;
   const description = `Portfolio, blog, and technical articles on web development, performance, and building scalable applications.`;
 
-  const ogImage = `${SITE_CONSTANTS.siteUrl}/og?title=${encodeURIComponent(title)}`;
+  const { ogImage } = getOgImage(title);
 
   const { finalMetadata } = getSeoMetaData({
     title,

@@ -2,6 +2,7 @@ import { promises as fs } from "node:fs";
 import path from "node:path";
 import type { Metadata } from "next";
 import { SITE_CONSTANTS } from "@/constants";
+import type { SeoMetaDataConfig } from "@/interfaces";
 
 export const getAllSlug = async (): Promise<{
   blogRoutes: string[];
@@ -94,16 +95,6 @@ export const slugify = (text: string): string => {
     .replace(/[^a-z0-9-]/g, "");
 };
 
-export interface SeoMetaDataConfig {
-  title: string;
-  description: string;
-  wholeSlug: string | null;
-  ogImage: string;
-  publishedTime?: string;
-  isFromIndexPage?: boolean;
-  isFromBlogPage?: boolean;
-}
-
 export const getSeoMetaData = ({
   title,
   description,
@@ -186,5 +177,13 @@ export const getSeoMetaData = ({
         canonical: url,
       },
     },
+  };
+};
+
+export const getOgImage = (title: string) => {
+  const ogImage = `${SITE_CONSTANTS.siteUrl}/og/${encodeURIComponent(title)}`;
+
+  return {
+    ogImage,
   };
 };

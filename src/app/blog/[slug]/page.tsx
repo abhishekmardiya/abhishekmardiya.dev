@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
+import Script from "next/script";
 import { MDXRemote } from "next-mdx-remote/rsc";
 import remarkGfm from "remark-gfm";
 import { CopyPageButton } from "@/component/CopyPageButton";
@@ -10,6 +11,7 @@ import {
   extractExcerptFromMdx,
   formatSlugToTitle,
   getAllSlug,
+  getOgImage,
   getSeoMetaData,
   readBlogMDXFile,
 } from "@/utils";
@@ -39,7 +41,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const title = formatSlugToTitle(slug);
   const description = extractExcerptFromMdx(content);
   //  api route
-  const ogImage = `${SITE_CONSTANTS.siteUrl}/og?title=${encodeURIComponent(title)}`;
+  const { ogImage } = getOgImage(title);
   const fullSlug = `/blog/${slug}`;
 
   const { finalMetadata } = getSeoMetaData({
@@ -65,8 +67,32 @@ export default async function BlogPage({ params }: Props) {
 
   const components = MDXComponents();
 
+  const title = formatSlugToTitle(slug);
+  const description = extractExcerptFromMdx(content);
+  //  api route
+  const { ogImage } = getOgImage(title);
+
+  const ldJson = {
+    __html: JSON.stringify({
+      "@context": "https://schema.org",
+      "@type": "BlogPosting",
+      headline: title,
+      // datePublished: publishedTime,
+      // dateModified: publishedTime,
+      description: description,
+      image: ogImage,
+      url: `${SITE_CONSTANTS.siteUrl}/blog/${slug}`,
+      author: {
+        "@type": "Person",
+        name: SITE_CONSTANTS.siteName,
+      },
+    }),
+  };
+
   return (
     <div className="space-y-4">
+      <Script type="application/ld+json" dangerouslySetInnerHTML={ldJson} />
+
       <div className="sm:mt-10 flex items-center justify-between">
         <GoHomeLink />
         <CopyPageButton content={content} />
