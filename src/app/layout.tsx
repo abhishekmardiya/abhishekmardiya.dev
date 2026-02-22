@@ -1,6 +1,7 @@
 import { Footer } from "@/component/Footer";
 import { Header } from "@/component/Header";
 import "./globals.css";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 import { Analytics } from "@vercel/analytics/react";
 import { Inter } from "next/font/google";
 import type { ReactNode } from "react";
@@ -23,6 +24,7 @@ export default function RootLayout({
           <main className="max-w-[80ch] mx-auto w-full space-y-6">
             {children}
             <Analytics />
+            <SpeedInsights />
           </main>
           <Footer />
         </div>
