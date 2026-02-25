@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import Script from "next/script";
 import { MDXRemote } from "next-mdx-remote/rsc";
 import remarkGfm from "remark-gfm";
 import { CopyPageButton } from "@/component/CopyPageButton";
@@ -73,25 +72,29 @@ export default async function BlogPage({ params }: Props) {
   const { ogImage } = getOgImage(title);
 
   const ldJson = {
-    __html: JSON.stringify({
-      "@context": "https://schema.org",
-      "@type": "BlogPosting",
-      headline: title,
-      // datePublished: publishedTime,
-      // dateModified: publishedTime,
-      description: description,
-      image: ogImage,
-      url: `${SITE_CONSTANTS.siteUrl}/blog/${slug}`,
-      author: {
-        "@type": "Person",
-        name: SITE_CONSTANTS.siteName,
-      },
-    }),
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    headline: title,
+    // datePublished: publishedTime,
+    // dateModified: publishedTime,
+    description: description,
+    image: ogImage,
+    url: `${SITE_CONSTANTS.siteUrl}/blog/${slug}`,
+    author: {
+      "@type": "Person",
+      name: SITE_CONSTANTS.siteName,
+    },
   };
 
   return (
     <div className="space-y-4">
-      <Script type="application/ld+json" dangerouslySetInnerHTML={ldJson} />
+      <script
+        id="blog-json-ld"
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(ldJson).replace(/</g, "\\u003c"),
+        }}
+      />
 
       <div className="sm:mt-10 flex items-center justify-between">
         <GoHomeLink />
