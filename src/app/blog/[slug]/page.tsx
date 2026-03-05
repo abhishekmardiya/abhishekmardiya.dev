@@ -5,14 +5,17 @@ import remarkGfm from "remark-gfm";
 import { CopyPageButton } from "@/component/CopyPageButton";
 import { GoHomeLink } from "@/component/GoHomeLink";
 import { MDXComponents } from "@/component/MDXComponents";
+import { TextToSpeech } from "@/component/TextToSpeech";
 import { SITE_CONSTANTS } from "@/constants";
 import {
+  calculateReadingTime,
   extractExcerptFromMdx,
   formatSlugToTitle,
   getAllSlug,
   getOgImage,
   getSeoMetaData,
   readBlogMDXFile,
+  stripMdxForSpeech,
 } from "@/utils";
 
 type Props = {
@@ -98,7 +101,13 @@ export default async function BlogPage({ params }: Props) {
 
       <div className="sm:mt-10 flex items-center justify-between">
         <GoHomeLink />
-        <CopyPageButton content={content} />
+        <div className="flex items-center gap-4">
+          <span className="text-sm text-gray-400">
+            {calculateReadingTime(content)} min read
+          </span>
+          <TextToSpeech text={stripMdxForSpeech(content)} />
+          <CopyPageButton content={content} />
+        </div>
       </div>
       <article className="markdown prose prose-sm prose-invert max-w-none sm:prose-base">
         <MDXRemote

@@ -63,7 +63,7 @@ export const readBlogMDXFile = async ({
   return rawContent;
 };
 
-const stripMdxForExcerpt = (text: string): string =>
+export const stripMdxForSpeech = (text: string): string =>
   text
     .replace(/<[A-Za-z][A-Za-z0-9]*[\s\S]*?<\/[A-Za-z][A-Za-z0-9]*>/g, "")
     .replace(/```[\s\S]*?```/g, "")
@@ -74,10 +74,16 @@ const stripMdxForExcerpt = (text: string): string =>
     .replace(/\s+/g, " ")
     .trim();
 
+export const calculateReadingTime = (content: string): number => {
+  const plainText = stripMdxForSpeech(content);
+  const words = plainText.split(/\s+/).filter((word) => word.length > 0).length;
+  return Math.ceil(words / 200);
+};
+
 export const extractExcerptFromMdx = (content: string): string => {
   const withoutFrontmatter = content.replace(/^---[\s\S]*?---/, "");
   const withoutTitle = withoutFrontmatter.replace(/^#\s+.+$/m, "");
-  const plain = stripMdxForExcerpt(withoutTitle);
+  const plain = stripMdxForSpeech(withoutTitle);
 
   const maxLength = 130;
 
