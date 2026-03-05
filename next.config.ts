@@ -53,6 +53,16 @@ const nextConfig: NextConfig = {
       },
     ];
   },
+  async redirects() {
+    return [
+      // Basic redirect
+      {
+        source: "/blog/handling-above-the-fold-images-the-right-way",
+        destination: "/blog/handling-above-the-fold-lcp-images-the-right-way",
+        permanent: true,
+      },
+    ];
+  },
   typedRoutes: true,
   logging: {
     fetches: {

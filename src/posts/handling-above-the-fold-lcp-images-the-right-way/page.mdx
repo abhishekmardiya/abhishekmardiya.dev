@@ -1,0 +1,186 @@
+# Handling Above-the-Fold LCP Images the Right Way
+
+<DateStamp>March 2026</DateStamp>
+
+You've just deployed your shiny new landing page. The design is crisp, the copy is compelling, but when you run a Lighthouse audit, you're hit with a glaring red score. The culprit? A massive hero image that takes forever to load, completely tanking your Largest Contentful Paint (LCP) metric.
+
+It's a frustrating scenario. You want high-quality visuals to grab the user's attention, but the browser is treating your critical hero image with the same urgency as a footer icon. What went wrong?
+
+## Why This Problem Matters
+
+Largest Contentful Paint (LCP) is a core web vital that measures how long it takes for the largest piece of content (usually an image or a text block) to become visible within the user's viewport.
+
+A poor LCP score doesn't just hurt your ego; it directly impacts your SEO rankings and user retention. If a user stares at a blank space where your hero image should be for more than 2.5 seconds, they are significantly more likely to bounce. The browser needs explicit instructions to prioritize critical assets, otherwise, it guesses—and it often guesses wrong.
+
+## Concept Explanation
+
+An "above-the-fold" image is any image visible on the screen without the user having to scroll. This is almost always your LCP element.
+
+By default, browsers discover images as they parse the HTML. If your image is buried deep in the DOM or injected via JavaScript, the browser won't know it needs to fetch it until late in the page load cycle. Furthermore, if you blindly apply `loading="lazy"` to all images, you are explicitly telling the browser to delay loading your most critical visual asset, which is disastrous for LCP.
+
+To fix this, we need to understand three key concepts:
+
+1. **Preloading:** Telling the browser to fetch the image as early as possible, even before it parses the `<img>` tag.
+2. **Fetch Priority:** Hinting to the browser that this specific image should be downloaded before other assets.
+3. **Lazy Loading:** Telling the browser to _delay_ downloading an image until the user scrolls near it (`loading="lazy"`). While great for saving bandwidth on off-screen images, applying this to an above-the-fold image actively fights against LCP.
+
+> - **Note:** In Next.js, the `<Image />` component has lazy loading **enabled by default**. Conversely, a native HTML `<img>` tag has lazy loading **disabled by default** (it loads eagerly unless you explicitly add `loading="lazy"`). You must explicitly opt-out of lazy loading in Next.js for above-the-fold images.
+
+## Practical Examples
+
+### The Standard HTML Way
+
+In a standard HTML site, you have to manually orchestrate the loading behavior of your `<img>` tags and the `<head>` of your document.
+
+First, ensure your image tag uses the correct attributes. You want to explicitly set `fetchpriority="high"`. Crucially, **never** use `loading="lazy"` on an above-the-fold image.
+
+```html
+<!-- Explicitly tell the browser this is high priority and avoid lazy loading -->
+<img src="/hero-image.jpg" alt="A beautiful hero image" fetchpriority="high" />
+```
+
+To get the absolute best performance, you should also add a preload link to your document's `<head>`. This tells the browser to start downloading the image before it even parses the `<body>`.
+
+```html
+<head>
+  <!-- Other head elements -->
+  <link rel="preload" as="image" href="/hero-image.jpg" fetchpriority="high" />
+</head>
+```
+
+### The Next.js Way
+
+If you're using Next.js, the framework provides the `next/image` component, which abstracts away almost all of this complexity.
+
+By simply adding the `preload` prop, Next.js automatically injects the `<link rel="preload">` tag into the head and disables lazy loading on the underlying `<img>` element.
+
+```tsx
+import Image from "next/image";
+
+export const NextHeroImage = () => {
+  return (
+    <Image
+      src="/hero-image.jpg"
+      alt="A beautiful hero image"
+      width={1200}
+      height={600}
+      // This single prop handles preloading automatically
+      preload
+    />
+  );
+};
+```
+
+### What If It's a Background Image?
+
+Sometimes your LCP element isn't an `<img>` tag at all, but rather a CSS `background-image`. The browser won't discover this image until it downloads and parses the CSS file, which creates a huge delay.
+
+**Standard HTML:**
+The solution is identical to the one above. You just add a preload link to your document's `<head>` so the browser fetches the image immediately.
+
+```html
+<head>
+  <link
+    rel="preload"
+    as="image"
+    href="/hero-background.jpg"
+    fetchpriority="high"
+  />
+</head>
+```
+
+**Next.js (React 19 / App Router):**
+Next.js's `next/image` only works for standard images, not CSS background images. For this scenario, you should leverage the `preload` function provided directly by `react-dom`.
+
+```tsx
+import { preload } from "react-dom";
+
+export const HeroSection = () => {
+  // Let React know to inject a preload link into the head
+  preload("/hero-background.jpg", { as: "image", fetchPriority: "high" });
+
+  return (
+    <div
+      className="hero-background"
+      style={{ backgroundImage: "url('/hero-background.jpg')" }}
+    >
+      <h1>Welcome to my site</h1>
+    </div>
+  );
+};
+```
+
+## The "Above-the-Fold but Not LCP" Dilemma
+
+![LCP Example Layout](/blog/lcp-example.webp)
+
+A common mistake is overusing the `preload` prop. You should **only preload your single LCP image**. If you preload too many images, they compete for the same network bandwidth, delaying the most critical one and actually hurting your score.
+
+Consider a layout like the one above: a large hero image on the left, and four smaller feature images on the right. All five images are visible "above the fold".
+
+In Next.js, you must handle these differently:
+
+1. **The Left Hero Image (The LCP Element):** This is the largest, most important visual. Use `preload` to prioritize it.
+2. **The Right Feature Images:** These are above the fold, so we _don't_ want them to lazy load. But they aren't the LCP, so we _shouldn't_ preload them. Instead, use the standard `loading="eager"` attribute to load them immediately without clogging up the priority queue.
+
+> **Note:** Starting with Next.js 16, the `priority` property has been deprecated. `loading` should be used instead.
+
+```tsx
+import Image from "next/image";
+
+export const HeroSectionLayout = () => {
+  return (
+    <div className="layout">
+      {/* 1. Preload the single LCP image */}
+      <Image
+        src="/hero-left.jpg"
+        alt="Hero LCP"
+        width={800}
+        height={800}
+        preload
+      />
+
+      <div className="side-features">
+        {/* 2. Eager load other above-the-fold images WITHOUT preloading */}
+        <Image
+          src="/feature-1.jpg"
+          alt="Feature 1"
+          width={200}
+          height={200}
+          loading="eager"
+        />
+        {/* repeat for other features */}
+      </div>
+    </div>
+  );
+};
+```
+
+## Production Considerations
+
+While preloading and fetch priority are powerful tools, they aren't magic bullets. You must also consider the payload itself.
+
+- **Image Formats:** Always serve modern formats like WebP or AVIF. They offer significantly better compression than JPEG or PNG, meaning fewer bytes over the wire.
+- **Sizing:** Don't serve a 4K image to a mobile device. Use responsive images (`srcset` or Next.js's built-in optimization) to serve appropriately sized assets based on the user's viewport.
+- **CDNs:** Serve your images from a Content Delivery Network (CDN) close to your users to minimize latency.
+
+## Common Mistakes Developers Make
+
+1. **Lazy Loading the Hero Image:** Applying `loading="lazy"` to an above-the-fold image is the most common and damaging mistake. It guarantees a poor LCP score.
+2. **Preloading Everything:** If you preload too many images, you create network congestion. The browser can only download so many things at once. Preloading 10 images means your critical hero image has to compete for bandwidth.
+3. **Ignoring Image Weight:** Preloading a 5MB unoptimized PNG won't fix your LCP. The browser will start downloading it early, but it will still take forever to finish.
+
+## Best Practices
+
+- **Identify your LCP element:** Use Lighthouse or Chrome DevTools to find exactly which element is your LCP.
+- **Prioritize only the LCP image:** Apply `fetchpriority="high"` (or the `preload` prop in Next.js) **only** to the single most important above-the-fold image.
+- **Lazy load everything else:** Any image below the fold should have `loading="lazy"`.
+- **Optimize the asset:** Use modern formats (WebP/AVIF) and serve appropriately sized dimensions.
+
+## Key Takeaways
+
+- Above-the-fold images are critical for your LCP score and overall user experience.
+- Never use `loading="lazy"` on images visible in the initial viewport.
+- In standard HTML, use `fetchpriority="high"` on the `<img>` tag and a `<link rel="preload">` in the head.
+- In Next.js, simply use the `preload` prop on the `next/image` component to handle this automatically.
+- Prioritization only works if the image itself is optimized in format and size.

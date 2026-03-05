@@ -1,0 +1,104 @@
+# The Hidden Cost of Using Regex Inside Functions
+
+<DateStamp>March 2026</DateStamp>
+
+You're building a form validation utility or a text parser, and you need to check if a string matches a specific pattern. It's natural to write a function like this:
+
+```ts
+export const isValidEmail = ({ email }: { email: string }): boolean => {
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  return emailRegex.test(email);
+};
+```
+
+It looks clean. It's encapsulated. It passes all the unit tests. But when this function is called thousands of times in a tight loop or on a high-traffic server, your application suddenly slows down. What went wrong?
+
+## Why This Problem Matters
+
+When you define a Regular Expression inside a function, the JavaScript engine might recompile that regex every single time the function is called. While modern engines (like V8) do cache regex compilations to some extent, relying on this optimization is risky.
+
+In performance-critical paths, recreating regex objects adds unnecessary overhead, leading to CPU spikes, increased memory churn, and slower execution times. At scale, this seemingly harmless coding habit compounds into noticeable application lag or increased server costs.
+
+## Concept Explanation
+
+A Regular Expression is not just a string; it's a state machine compiled by the JavaScript engine to perform pattern matching. Compiling this state machine is relatively expensive.
+
+When you write `const regex = /pattern/` or `new RegExp('pattern')` inside a function, you are instructing the engine to allocate memory and potentially re-evaluate that pattern on every invocation.
+
+If you move the regex outside the function, it gets compiled exactly once when the script loads. The same compiled instance is then reused across all function calls.
+
+## Practical Examples
+
+### The Anti-Pattern
+
+```ts
+// ❌ Don't do this
+export const formatCurrency = ({ value }: { value: number | string }): string => {
+  const currencyRegex = /\B(?=(\d{3})+(?!\d))/g;
+  return value.toString().replace(currencyRegex, ",");
+};
+```
+
+### The Optimized Approach
+
+By hoisting the regex to the module scope, the regex engine builds the state machine just once.
+
+```ts
+// ✅ Do this
+const CURRENCY_REGEX = /\B(?=(\d{3})+(?!\d))/g;
+
+export const formatCurrency = ({ value }: { value: number | string }): string => {
+  return value.toString().replace(CURRENCY_REGEX, ",");
+};
+```
+
+## Production Considerations
+
+In a typical React component or Node.js API route, functions run frequently.
+
+- **Frontend:** If you have a validation function running on every keystroke (`onChange`), recreating the regex can cause micro-stutters and drop frames, degrading the user experience.
+- **Backend:** For a Node.js server parsing logs, authenticating tokens, or validating large JSON payloads, regex recompilation can severely throttle your requests per second (RPS) and trigger garbage collection pauses under high concurrency.
+
+## Common Mistakes Developers Make
+
+1. **Dynamic Regex when Static is Enough:** Developers often use `new RegExp()` inside a function because they think they need it dynamically, but the pattern is actually static.
+2. **Global Flag (`g`) Pitfalls:** If you pull a regex with a `g` (global) flag outside a function, remember that it maintains state (`lastIndex`) when used with `.test()` or `.exec()`.
+
+```ts
+const globalRegex = /foo/g;
+
+export const checkFoo = ({ inputStr }: { inputStr: string }): boolean => {
+  // ⚠️ Bug: globalRegex.lastIndex is mutated on every test!
+  return globalRegex.test(inputStr);
+};
+```
+
+If you call `checkFoo({ inputStr: 'foo' })` twice, the first call returns `true`, but the second call returns `false` because `lastIndex` wasn't reset. You either drop the `g` flag, reset `globalRegex.lastIndex = 0` manually, or use methods like `String.prototype.match()` which don't mutate state on test.
+
+## Best Practices
+
+- **Extract static regexes:** Move them to module scope or constants.
+- **Use `RegExp` only for dynamic patterns:** If the pattern depends on a variable (e.g., `new RegExp(userInput)`), you have no choice but to create it dynamically. Even then, consider caching the compiled regex if the `userInput` repeats frequently.
+
+  ```ts
+  const regexCache = new Map<string, RegExp>();
+
+  export const checkDynamicPattern = ({ inputStr, pattern }: { inputStr: string; pattern: string }): boolean => {
+    if (!regexCache.has(pattern)) {
+      regexCache.set(pattern, new RegExp(pattern));
+    }
+    
+    // Using non-null assertion since we just set it if it didn't exist
+    const regex = regexCache.get(pattern)!;
+    return regex.test(inputStr);
+  };
+  ```
+
+- **Watch out for the `g` flag:** Reusing a global regex across multiple function calls with state-mutating methods like `.test()` can lead to unexpected bugs. Be fully aware of what methods you use.
+
+## Key Takeaways
+
+- Defining regexes inside functions can cause unnecessary recompilation and memory allocation.
+- Move static regular expressions to the outer scope to compile them exactly once.
+- Be careful with the `g` flag on shared regex instances, as they retain the `lastIndex` state.
+- Small performance optimizations in utilities compound into massive gains at scale.
