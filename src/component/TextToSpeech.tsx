@@ -83,7 +83,7 @@ export const TextToSpeech = ({ text }: { text: string }) => {
   }
 
   return (
-    <div className="flex items-center gap-4 text-sm text-gray-400">
+    <div className="flex items-center gap-4 text-sm text-gray-400 whitespace-nowrap">
       <button
         type="button"
         onClick={isSpeaking ? handlePause : handlePlay}
@@ -129,7 +129,7 @@ export const TextToSpeech = ({ text }: { text: string }) => {
         <span>{isSpeaking ? "Pause" : isPaused ? "Resume" : "Listen"}</span>
       </button>
 
-      {(isSpeaking || isPaused) && (
+      {Boolean(isSpeaking || isPaused) && (
         <button
           type="button"
           onClick={handleStop}

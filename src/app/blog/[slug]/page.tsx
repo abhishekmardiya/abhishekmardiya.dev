@@ -7,6 +7,7 @@ import { GoHomeLink } from "@/component/GoHomeLink";
 import { MDXComponents } from "@/component/MDXComponents";
 import { TextToSpeech } from "@/component/TextToSpeech";
 import { SITE_CONSTANTS } from "@/constants";
+import { REGEX } from "@/constants/regex";
 import {
   calculateReadingTime,
   extractExcerptFromMdx,
@@ -27,7 +28,9 @@ export const dynamicParams = false;
 export async function generateStaticParams() {
   const { blogRoutes } = await getAllSlug();
 
-  return blogRoutes.map((slug) => ({ slug: slug.replace("/blog/", "") }));
+  return blogRoutes.map((route) => ({
+    slug: route.slug.replace("/blog/", ""),
+  }));
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
@@ -95,14 +98,17 @@ export default async function BlogPage({ params }: Props) {
         id="blog-json-ld"
         type="application/ld+json"
         dangerouslySetInnerHTML={{
-          __html: JSON.stringify(ldJson).replace(/</g, "\\u003c"),
+          __html: JSON.stringify(ldJson).replace(
+            REGEX.JSON_LD_LESS_THAN,
+            "\\u003c"
+          ),
         }}
       />
 
-      <div className="sm:mt-10 flex items-center justify-between">
+      <div className="sm:mt-10 flex flex-wrap items-center justify-between gap-4">
         <GoHomeLink />
-        <div className="flex items-center gap-4">
-          <span className="text-sm text-gray-400">
+        <div className="flex flex-wrap items-center gap-3 sm:gap-4">
+          <span className="text-sm text-gray-400 whitespace-nowrap">
             {calculateReadingTime(content)} min read
           </span>
           <TextToSpeech text={stripMdxForSpeech(content)} />

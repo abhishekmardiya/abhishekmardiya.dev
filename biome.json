@@ -6,29 +6,56 @@
     "useIgnoreFile": true
   },
   "files": {
-    "ignoreUnknown": true,
-    "includes": ["**", "!node_modules", "!.next", "!dist", "!build"]
+    "ignoreUnknown": false
   },
   "formatter": {
-    "enabled": true,
     "indentStyle": "space"
   },
   "linter": {
-    "enabled": true,
     "rules": {
-      "recommended": true,
       "suspicious": {
-        "noUnknownAtRules": "off",
-        "noArrayIndexKey": "off"
+        "noTsIgnore": "error",
+        "useAwait": "error",
+        "noAlert": "error"
+      },
+      "complexity": {
+        "noUselessFragments": "error",
+        "noUselessStringConcat": "error",
+        "noUselessUndefined": "error",
+        "noImplicitCoercions": "warn",
+        "noUselessCatchBinding": "error",
+        "noImportantStyles": "off"
       },
       "security": {
         "noDangerouslySetInnerHtml": "off"
       },
-      "complexity": {
-        "noImportantStyles": "off"
-      },
       "style": {
-        "noDescendingSpecificity": "off"
+        "useNodejsImportProtocol": "error",
+        "useImportType": "error"
+      },
+      "correctness": {
+        "noUnusedImports": "error",
+        "useExhaustiveDependencies": "warn",
+        "noUnusedVariables": "error",
+        "noNextAsyncClientComponent": "error",
+        "noReactPropAssignments": "error"
+      },
+      "a11y": {
+        "noAutofocus": "warn",
+        "noLabelWithoutControl": "warn"
+      },
+      "nursery": {
+        "noDuplicateEnumValues": "error",
+        "noDuplicatedSpreadProps": "error",
+        "noEqualsToNull": "error",
+        "noFloatingClasses": "warn",
+        "noLeakedRender": "warn",
+        "noRedundantDefaultExport": "error",
+        "noReturnAssign": "error"
+      },
+      "performance": {
+        "noBarrelFile": "error",
+        "useTopLevelRegex": "error"
       }
     },
     "domains": {
@@ -36,10 +63,9 @@
       "react": "recommended"
     }
   },
-  "css": {
-    "parser": {
-      "cssModules": true,
-      "tailwindDirectives": true
+  "javascript": {
+    "formatter": {
+      "trailingCommas": "es5"
     }
   },
   "assist": {
@@ -47,6 +73,11 @@
       "source": {
         "organizeImports": "on"
       }
+    }
+  },
+  "css": {
+    "parser": {
+      "tailwindDirectives": true
     }
   }
 }

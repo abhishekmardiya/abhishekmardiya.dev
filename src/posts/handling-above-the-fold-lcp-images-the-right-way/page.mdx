@@ -112,7 +112,10 @@ export const HeroSection = () => {
 
 ## The "Above-the-Fold but Not LCP" Dilemma
 
-![LCP Example Layout](/blog/lcp-example.webp)
+<Image
+  src="/blog/lcp-example.webp"
+  alt="Layout with one large image and four thumbnails"
+/>
 
 A common mistake is overusing the `preload` prop. You should **only preload your single LCP image**. If you preload too many images, they compete for the same network bandwidth, delaying the most critical one and actually hurting your score.
 

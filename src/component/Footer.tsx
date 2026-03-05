@@ -8,7 +8,7 @@ export const Footer = () => {
   ];
 
   return (
-    <footer className="mt-18 px-4 text-center sm:mt-22">
+    <footer className="px-4 text-center">
       <div className="flex flex-wrap justify-center gap-4 gap-y-3 tracking-tight">
         {links.map((link) => (
           <Link

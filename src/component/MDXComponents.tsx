@@ -3,6 +3,7 @@ import Link from "next/link";
 import type { ComponentPropsWithoutRef, ReactNode } from "react";
 import { highlight } from "sugar-high";
 import { SITE_CONSTANTS } from "@/constants";
+import { REGEX } from "@/constants/regex";
 import { slugify } from "@/utils";
 import { CopyCodeBlock } from "./CopyCodeBlock";
 
@@ -32,7 +33,7 @@ type BlockquoteProps = ComponentPropsWithoutRef<"blockquote">;
 const components = {
   h1: (props: HeadingProps) => (
     <h1
-      className="font-medium text-2xl text-zinc-200 sm:text-4xl pt-6 mb-0!"
+      className="font-medium text-2xl text-zinc-200 sm:text-4xl pt-6 mb-0! wrap-break-words"
       {...props}
     />
   ),
@@ -42,15 +43,15 @@ const components = {
     return (
       <h2
         id={slug}
-        className="group text-zinc-200 font-medium mt-6 mb-2 text-xl sm:mt-8 sm:mb-3 sm:text-2xl scroll-mt-20 flex items-center gap-2 cursor-pointer max-w-fit"
+        className="group text-zinc-200 font-medium mt-6 mb-2 text-xl sm:mt-8 sm:mb-3 sm:text-2xl scroll-mt-20 flex items-center gap-2 cursor-pointer wrap-break-words max-w-full"
         {...props}
       >
+        <span className="flex-1 wrap-break-words">{children}</span>
         <Link
           href={`#${slug}`}
           className="ml-1 inline-flex shrink-0 items-center gap-2 justify-center rounded p-0.5 no-underline"
           aria-label={`Link to section: ${getHeadingSlug(children)}`}
         >
-          <span>{children}</span>
           <svg
             xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 24 24"
@@ -75,7 +76,7 @@ const components = {
     return (
       <h3
         id={slug}
-        className="text-zinc-200 font-medium mt-6 mb-2 text-base scroll-mt-6 sm:mt-8 sm:mb-3 sm:text-lg"
+        className="text-zinc-200 font-medium mt-6 mb-2 text-base scroll-mt-6 sm:mt-8 sm:mb-3 sm:text-lg wrap-break-words"
         {...props}
       >
         {children}
@@ -83,7 +84,10 @@ const components = {
     );
   },
   p: (props: ParagraphProps) => (
-    <p className="text-zinc-300 text-[15px] sm:text-base" {...props} />
+    <p
+      className="text-zinc-300 text-[15px] sm:text-base wrap-break-words"
+      {...props}
+    />
   ),
   ul: (props: ListProps) => (
     <ul className="text-zinc-300 list-disc pl-5 space-y-1" {...props} />
@@ -110,20 +114,26 @@ const components = {
       );
     }
     const text =
-      typeof children === "string" ? children.replace(/^`|`$/g, "") : children;
+      typeof children === "string"
+        ? children.replace(REGEX.BACKTICKS, "")
+        : children;
     return (
-      <code className={className} {...props}>
+      <code className={`${className || ""} wrap-break-words`} {...props}>
         {text}
       </code>
     );
   },
   inlineCode: (props: ComponentPropsWithoutRef<"code">) => {
-    const { children, ...rest } = props;
+    const { children, className, ...rest } = props;
     const text =
       typeof children === "string"
-        ? String(children).replace(/^`|`$/g, "")
+        ? String(children).replace(REGEX.BACKTICKS, "")
         : children;
-    return <code {...rest}>{text}</code>;
+    return (
+      <code className={`${className || ""} wrap-break-words`} {...rest}>
+        {text}
+      </code>
+    );
   },
   blockquote: (props: BlockquoteProps) => (
     <blockquote
@@ -135,7 +145,7 @@ const components = {
     props: ComponentPropsWithoutRef<typeof Image> & {
       width?: number;
       height?: number;
-    },
+    }
   ) => {
     const { width = 800, height = 450, ...rest } = props;
     return (
@@ -144,7 +154,7 @@ const components = {
         height={height}
         unoptimized
         {...rest}
-        className="rounded-md"
+        className="rounded-md max-w-full h-auto"
       />
     );
   },

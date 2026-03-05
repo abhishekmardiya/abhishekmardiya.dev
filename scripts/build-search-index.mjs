@@ -1,25 +1,44 @@
 import { readdir, readFile } from "node:fs/promises";
 import { join } from "node:path";
 
+const REGEX = {
+  MDX_HTML_TAGS: /<[A-Za-z][A-Za-z0-9]*[\s\S]*?<\/[A-Za-z][A-Za-z0-9]*>/g,
+  MDX_CODE_BLOCKS: /```[\s\S]*?```/g,
+  MDX_LINKS: /\[([^\]]+)\]\([^)]+\)/g,
+  MDX_TABLE_ROWS: /^\|[^\n]*\|$/gm,
+  MDX_SPECIAL_CHARS: /[#*_~`<>]/g,
+  NEWLINES: /\n+/g,
+  WHITESPACES: /\s+/g,
+  MDX_HEADING_1: /^#\s+(.+)$/m,
+  MDX_HEADING_1_NO_CAPTURE: /^#\s+.+$/m,
+  MDX_FRONTMATTER: /^---[\s\S]*?---/,
+  SLUG_INVALID_CHARS: /[^a-z0-9-]/g,
+  MDX_SECTIONS: /^(#{2,3})\s+(.+)$/gm,
+  HYPHENS: /-/g,
+};
+
 const stripMdxForExcerpt = (text) =>
   text
-    .replace(/<[A-Za-z][A-Za-z0-9]*[\s\S]*?<\/[A-Za-z][A-Za-z0-9]*>/g, "")
-    .replace(/```[\s\S]*?```/g, "")
-    .replace(/\[([^\]]+)\]\([^)]+\)/g, "$1")
-    .replace(/^\|[^\n]*\|$/gm, "")
-    .replace(/[#*_~`<>]/g, "")
-    .replace(/\n+/g, " ")
-    .replace(/\s+/g, " ")
+    .replace(REGEX.MDX_HTML_TAGS, "")
+    .replace(REGEX.MDX_CODE_BLOCKS, "")
+    .replace(REGEX.MDX_LINKS, "$1")
+    .replace(REGEX.MDX_TABLE_ROWS, "")
+    .replace(REGEX.MDX_SPECIAL_CHARS, "")
+    .replace(REGEX.NEWLINES, " ")
+    .replace(REGEX.WHITESPACES, " ")
     .trim();
 
 const extractTitle = (content) => {
-  const h1Match = content.match(/^#\s+(.+)$/m);
+  const h1Match = content.match(REGEX.MDX_HEADING_1);
   return h1Match ? h1Match[1].trim() : "";
 };
 
 const extractExcerpt = (content, maxLength = 150) => {
-  const withoutFrontmatter = content.replace(/^---[\s\S]*?---/, "");
-  const withoutTitle = withoutFrontmatter.replace(/^#\s+.+$/m, "");
+  const withoutFrontmatter = content.replace(REGEX.MDX_FRONTMATTER, "");
+  const withoutTitle = withoutFrontmatter.replace(
+    REGEX.MDX_HEADING_1_NO_CAPTURE,
+    ""
+  );
   const plain = stripMdxForExcerpt(withoutTitle);
   if (plain.length <= maxLength) {
     return plain;
@@ -30,13 +49,13 @@ const extractExcerpt = (content, maxLength = 150) => {
 const slugify = (text) =>
   text
     .toLowerCase()
-    .replace(/\s+/g, "-")
-    .replace(/[^a-z0-9-]/g, "");
+    .replace(REGEX.WHITESPACES, "-")
+    .replace(REGEX.SLUG_INVALID_CHARS, "");
 
 const extractSections = (content, snippetMaxLength = 80) => {
-  const withoutFrontmatter = content.replace(/^---[\s\S]*?---/, "");
+  const withoutFrontmatter = content.replace(REGEX.MDX_FRONTMATTER, "");
   const sections = [];
-  const parts = withoutFrontmatter.split(/^(#{2,3})\s+(.+)$/gm);
+  const parts = withoutFrontmatter.split(REGEX.MDX_SECTIONS);
 
   for (let i = 1; i < parts.length; i += 3) {
     const heading = parts[i + 1]?.trim() ?? "";
@@ -71,7 +90,8 @@ const buildSearchIndex = async () => {
       continue;
     }
 
-    const title = extractTitle(content) || entry.name.replace(/-/g, " ");
+    const title =
+      extractTitle(content) || entry.name.replace(REGEX.HYPHENS, " ");
     const slug = `/blog/${entry.name}`;
     const excerpt = extractExcerpt(content);
 

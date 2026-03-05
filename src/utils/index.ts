@@ -2,10 +2,11 @@ import { promises as fs } from "node:fs";
 import path from "node:path";
 import type { Metadata } from "next";
 import { SITE_CONSTANTS } from "@/constants";
+import { REGEX } from "@/constants/regex";
 import type { SeoMetaDataConfig } from "@/interfaces";
 
 export const getAllSlug = async (): Promise<{
-  blogRoutes: string[];
+  blogRoutes: { slug: string; title: string }[];
   allRoutes: string[];
 }> => {
   const contentDir = path.join(process.cwd(), "src", "posts");
@@ -17,19 +18,23 @@ export const getAllSlug = async (): Promise<{
       .map(async (entry) => {
         const pagePath = path.join(contentDir, entry.name, "page.mdx");
         try {
-          await fs.access(pagePath);
-          return `/blog/${entry.name}`;
+          const content = await fs.readFile(pagePath, "utf-8");
+          const titleMatch = content.match(REGEX.MDX_HEADING_1);
+          const title = titleMatch ? titleMatch[1] : "";
+          return { slug: `/blog/${entry.name}`, title: title.trim() };
         } catch {
           return null;
         }
-      }),
+      })
   );
 
-  const blogRoutes = slugs.filter((slug): slug is string => slug !== null);
+  const blogRoutes = slugs.filter(
+    (item): item is { slug: string; title: string } => item !== null
+  );
 
   return {
     blogRoutes,
-    allRoutes: ["", ...blogRoutes],
+    allRoutes: ["", ...blogRoutes.map((route) => route.slug)],
   };
 };
 
@@ -45,7 +50,7 @@ export const formatSlugToTitle = (slug: string): string => {
   );
 };
 
-export const readBlogMDXFile = async ({
+export const readBlogMDXFile = ({
   slug,
 }: {
   slug: string;
@@ -55,7 +60,7 @@ export const readBlogMDXFile = async ({
     "src",
     "posts",
     slug,
-    "page.mdx",
+    "page.mdx"
   );
 
   const rawContent = fs.readFile(contentPath, "utf-8");
@@ -65,24 +70,29 @@ export const readBlogMDXFile = async ({
 
 export const stripMdxForSpeech = (text: string): string =>
   text
-    .replace(/<[A-Za-z][A-Za-z0-9]*[\s\S]*?<\/[A-Za-z][A-Za-z0-9]*>/g, "")
-    .replace(/```[\s\S]*?```/g, "")
-    .replace(/\[([^\]]+)\]\([^)]+\)/g, "$1")
-    .replace(/^\|[^\n]*\|$/gm, "")
-    .replace(/[#*_~`<>]/g, "")
-    .replace(/\n+/g, " ")
-    .replace(/\s+/g, " ")
+    .replace(REGEX.MDX_HTML_TAGS, "")
+    .replace(REGEX.MDX_CODE_BLOCKS, "")
+    .replace(REGEX.MDX_LINKS, "$1")
+    .replace(REGEX.MDX_TABLE_ROWS, "")
+    .replace(REGEX.MDX_SPECIAL_CHARS, "")
+    .replace(REGEX.NEWLINES, " ")
+    .replace(REGEX.WHITESPACES, " ")
     .trim();
 
 export const calculateReadingTime = (content: string): number => {
   const plainText = stripMdxForSpeech(content);
-  const words = plainText.split(/\s+/).filter((word) => word.length > 0).length;
+  const words = plainText
+    .split(REGEX.WHITESPACES_SINGLE)
+    .filter((word) => word.length > 0).length;
   return Math.ceil(words / 200);
 };
 
 export const extractExcerptFromMdx = (content: string): string => {
-  const withoutFrontmatter = content.replace(/^---[\s\S]*?---/, "");
-  const withoutTitle = withoutFrontmatter.replace(/^#\s+.+$/m, "");
+  const withoutFrontmatter = content.replace(REGEX.MDX_FRONTMATTER, "");
+  const withoutTitle = withoutFrontmatter.replace(
+    REGEX.MDX_HEADING_1_NO_CAPTURE,
+    ""
+  );
   const plain = stripMdxForSpeech(withoutTitle);
 
   const maxLength = 130;
@@ -97,8 +107,8 @@ export const extractExcerptFromMdx = (content: string): string => {
 export const slugify = (text: string): string => {
   return text
     .toLowerCase()
-    .replace(/\s+/g, "-")
-    .replace(/[^a-z0-9-]/g, "");
+    .replace(REGEX.WHITESPACES, "-")
+    .replace(REGEX.SLUG_INVALID_CHARS, "");
 };
 
 export const getSeoMetaData = ({

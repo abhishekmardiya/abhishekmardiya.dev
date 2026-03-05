@@ -11,6 +11,7 @@ const nextConfig: NextConfig = {
       },
     ],
   },
+  // biome-ignore lint/suspicious/useAwait: Next.js config functions are often async
   async headers() {
     return [
       {
@@ -53,6 +54,7 @@ const nextConfig: NextConfig = {
       },
     ];
   },
+  // biome-ignore lint/suspicious/useAwait: Next.js config functions are often async
   async redirects() {
     return [
       // Basic redirect

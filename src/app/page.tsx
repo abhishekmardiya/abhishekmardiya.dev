@@ -4,7 +4,7 @@ import { BlogLinks } from "@/component/BlogLinks";
 import { SITE_CONSTANTS } from "@/constants";
 import { getOgImage, getSeoMetaData } from "@/utils";
 
-export async function generateMetadata(): Promise<Metadata> {
+export function generateMetadata(): Metadata {
   const title = `${SITE_CONSTANTS.siteName} | ${SITE_CONSTANTS.profession}`;
   const description = `Portfolio, blog, and technical articles on web development, performance, and building scalable applications.`;
 

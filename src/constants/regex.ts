@@ -1,0 +1,16 @@
+export const REGEX = {
+  BACKTICKS: /^`|`$/g,
+  MDX_HEADING_1: /^#\s+(.+)$/m,
+  MDX_HEADING_1_NO_CAPTURE: /^#\s+.+$/m,
+  MDX_HTML_TAGS: /<[A-Za-z][A-Za-z0-9]*[\s\S]*?<\/[A-Za-z][A-Za-z0-9]*>/g,
+  MDX_CODE_BLOCKS: /```[\s\S]*?```/g,
+  MDX_LINKS: /\[([^\]]+)\]\([^)]+\)/g,
+  MDX_TABLE_ROWS: /^\|[^\n]*\|$/gm,
+  MDX_SPECIAL_CHARS: /[#*_~`<>]/g,
+  NEWLINES: /\n+/g,
+  WHITESPACES: /\s+/g,
+  WHITESPACES_SINGLE: /\s+/,
+  MDX_FRONTMATTER: /^---[\s\S]*?---/,
+  SLUG_INVALID_CHARS: /[^a-z0-9-]/g,
+  JSON_LD_LESS_THAN: /</g,
+};

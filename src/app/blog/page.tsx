@@ -3,7 +3,7 @@ import { BlogLinks } from "@/component/BlogLinks";
 import { GoHomeLink } from "@/component/GoHomeLink";
 import { getOgImage, getSeoMetaData } from "@/utils";
 
-export async function generateMetadata(): Promise<Metadata> {
+export function generateMetadata(): Metadata {
   const title = "Blog";
   const description =
     "Thoughts on web development, performance optimization, and frontend best practices.";

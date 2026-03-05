@@ -8,7 +8,7 @@ export async function GET(
     params,
   }: {
     params: Promise<{ title: string }>;
-  },
+  }
 ) {
   const { title } = await params;
 
@@ -43,6 +43,6 @@ export async function GET(
     {
       width: 1200,
       height: 630,
-    },
+    }
   );
 }

@@ -181,7 +181,7 @@ export function SearchCommand() {
       // @ts-expect-error
       router.push(slug);
     },
-    [router],
+    [router]
   );
 
   useEffect(() => {
@@ -246,7 +246,7 @@ export function SearchCommand() {
                         <DocumentIcon className="size-4 shrink-0 text-zinc-500" />
                         {group.title}
                       </span>
-                      {group.excerpt && (
+                      {Boolean(group.excerpt) && (
                         <span className="line-clamp-1 pl-6 text-xs text-zinc-400">
                           {group.excerpt}
                         </span>
