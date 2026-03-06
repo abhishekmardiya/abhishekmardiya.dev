@@ -1,0 +1,45 @@
+#!/usr/bin/env sh
+
+# TypeScript check
+echo "🔍 Running TypeScript checks..."
+npx tsc --noEmit
+if [ $? -ne 0 ]; then
+  echo "Commit aborted...❌ TypeScript errors detected."
+  exit 1
+fi
+echo "✅ TypeScript checks passed!"
+echo ""
+
+# Biome: lint + format, errors only
+echo "🧹 Running Biome lint checks..."
+npx biome check --diagnostic-level=error
+if [ $? -ne 0 ]; then
+  echo "Commit aborted...❌ Biome linting errors detected."
+  exit 1
+fi
+echo "✅ Biome lint checks passed!"
+echo ""
+
+# Public: only .webp and search-index.json allowed
+echo "🖼️ Checking public directory for allowed file types..."
+DISALLOWED=$(find public -type f ! -name "*.webp" ! -name "search-index.json" ! -name ".DS_Store" 2>/dev/null)
+if [ -n "$DISALLOWED" ]; then
+  echo "Commit aborted...❌ Only .webp files and search-index.json are allowed in public directory."
+  echo "$DISALLOWED"
+  exit 1
+fi
+echo "✅ Public directory check passed!"
+echo ""
+
+# Public: no file greater than 100KB
+echo "📦 Checking public directory for file size limits..."
+OVERSIZED=$(find public -type f -size +100k 2>/dev/null)
+if [ -n "$OVERSIZED" ]; then
+  echo "Commit aborted...❌ No file in public should exceed 100KB."
+  echo "$OVERSIZED"
+  exit 1
+fi
+echo "✅ Public file size check passed!"
+echo ""
+
+echo "✅ All checks passed!"

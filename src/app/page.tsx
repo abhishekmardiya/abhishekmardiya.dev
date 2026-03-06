@@ -6,7 +6,8 @@ import { getOgImage, getSeoMetaData } from "@/utils";
 
 export function generateMetadata(): Metadata {
   const title = `${SITE_CONSTANTS.siteName} | ${SITE_CONSTANTS.profession}`;
-  const description = `Portfolio, blog, and technical articles on web development, performance, and building scalable applications.`;
+  const description =
+    "Software Developer Engineer passionate about crafting high-performance web applications, exploring modern frontend architectures, and sharing technical insights.";
 
   const { ogImage } = getOgImage(title);
 

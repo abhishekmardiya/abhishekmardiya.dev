@@ -242,7 +242,7 @@ export const getBlogJsonLd = ({
     "@context": "https://schema.org",
     "@type": "BlogPosting",
     headline: title,
-    datePublished: publishedTime,
+    datePublished: new Date(publishedTime).toISOString(),
     dateModified: new Date().toISOString(),
     description: excerpt,
     image: ogImage,
@@ -250,6 +250,7 @@ export const getBlogJsonLd = ({
     author: {
       "@type": "Person",
       name: SITE_CONSTANTS.siteName,
+      url: SITE_CONSTANTS.siteUrl,
     },
   };
 

@@ -46,10 +46,10 @@ const components = {
         className="group text-zinc-200 font-medium mt-6 mb-2 text-xl sm:mt-8 sm:mb-3 sm:text-2xl scroll-mt-20 flex items-center gap-2 cursor-pointer wrap-break-words max-w-full"
         {...props}
       >
-        <span className="flex-1 wrap-break-words">{children}</span>
+        <span className="wrap-break-words">{children}</span>
         <Link
           href={`#${slug}`}
-          className="ml-1 inline-flex shrink-0 items-center gap-2 justify-center rounded p-0.5 no-underline"
+          className="inline-flex shrink-0 items-center justify-center rounded p-0.5 no-underline"
           aria-label={`Link to section: ${getHeadingSlug(children)}`}
         >
           <svg

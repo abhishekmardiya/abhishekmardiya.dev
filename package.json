@@ -3,17 +3,18 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "search-index": "node scripts/build-search-index.mjs",
     "dev": "npm run search-index &&next dev",
     "ts": "tsc --noEmit --watch",
+    "search-index": "node scripts/build-search-index.mjs",
     "lint": "biome check",
     "format": "biome format --write",
     "build": "npm run search-index && next build",
-    "start": "next start"
+    "start": "next start",
+    "prepare": "husky"
   },
   "dependencies": {
-    "@vercel/speed-insights": "^1.3.1",
     "@vercel/analytics": "^1.6.1",
+    "@vercel/speed-insights": "^1.3.1",
     "cmdk": "^1.1.1",
     "flexsearch": "^0.8.212",
     "next": "16.1.6",
@@ -31,6 +32,7 @@
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "babel-plugin-react-compiler": "1.0.0",
+    "husky": "^9.1.7",
     "tailwindcss": "^4",
     "typescript": "^5"
   }
