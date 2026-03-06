@@ -18,6 +18,7 @@ This is a Next.js-based personal website and blog for abhishekmardiya.dev. The c
 - Keep components small and focused
 - Lazy load components not needed on initial load (e.g. modals, dialogs); use `ssr: false` with `next/dynamic` to skip SSR/hydration
 - Always run TypeScript in watch mode during development
+- Do not define regular expressions inside functions. Shared patterns should be placed in `constants/regex.ts` and imported where needed. In JavaScript files, declare regex constants at the top of the file.
 
 ## Git Commit Messages
 

@@ -24,7 +24,7 @@ To fix this, we need to understand three key concepts:
 2. **Fetch Priority:** Hinting to the browser that this specific image should be downloaded before other assets.
 3. **Lazy Loading:** Telling the browser to _delay_ downloading an image until the user scrolls near it (`loading="lazy"`). While great for saving bandwidth on off-screen images, applying this to an above-the-fold image actively fights against LCP.
 
-> - **Note:** In Next.js, the `<Image />` component has lazy loading **enabled by default**. Conversely, a native HTML `<img>` tag has lazy loading **disabled by default** (it loads eagerly unless you explicitly add `loading="lazy"`). You must explicitly opt-out of lazy loading in Next.js for above-the-fold images.
+> **Note:** In Next.js, the `<Image />` component has lazy loading **enabled by default**. Conversely, a native HTML `<img>` tag has lazy loading **disabled by default** (it loads eagerly unless you explicitly add `loading="lazy"`). You must explicitly opt-out of lazy loading in Next.js for above-the-fold images.
 
 ## Practical Examples
 

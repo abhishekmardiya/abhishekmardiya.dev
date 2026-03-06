@@ -5,86 +5,11 @@ import { SITE_CONSTANTS } from "@/constants";
 import { REGEX } from "@/constants/regex";
 import type { SeoMetaDataConfig } from "@/interfaces";
 
-export const getAllSlug = async (): Promise<{
-  blogRoutes: { slug: string; title: string }[];
-  allRoutes: string[];
-}> => {
-  const contentDir = path.join(process.cwd(), "src", "posts");
-  const entries = await fs.readdir(contentDir, { withFileTypes: true });
+// Markdown
+const extractTitleFromMdx = (content: string): string => {
+  const titleMatch = content.match(REGEX.MDX_HEADING_1);
 
-  const slugs = await Promise.all(
-    entries
-      .filter((entry) => entry.isDirectory())
-      .map(async (entry) => {
-        const pagePath = path.join(contentDir, entry.name, "page.mdx");
-        try {
-          const content = await fs.readFile(pagePath, "utf-8");
-          const titleMatch = content.match(REGEX.MDX_HEADING_1);
-          const title = titleMatch ? titleMatch[1] : "";
-          return { slug: `/blog/${entry.name}`, title: title.trim() };
-        } catch {
-          return null;
-        }
-      })
-  );
-
-  const blogRoutes = slugs.filter(
-    (item): item is { slug: string; title: string } => item !== null
-  );
-
-  return {
-    blogRoutes,
-    allRoutes: ["", ...blogRoutes.map((route) => route.slug)],
-  };
-};
-
-export const formatSlugToTitle = (slug: string): string => {
-  const segment = slug.split("/").pop() ?? slug;
-  return (
-    segment
-      .split("-")
-      .map((word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
-      .join(" ")
-      // "How To .." -> "How to .."
-      .replace(" To ", " to ")
-  );
-};
-
-export const readBlogMDXFile = ({
-  slug,
-}: {
-  slug: string;
-}): Promise<string> => {
-  const contentPath = path.join(
-    process.cwd(),
-    "src",
-    "posts",
-    slug,
-    "page.mdx"
-  );
-
-  const rawContent = fs.readFile(contentPath, "utf-8");
-
-  return rawContent;
-};
-
-export const stripMdxForSpeech = (text: string): string =>
-  text
-    .replace(REGEX.MDX_HTML_TAGS, "")
-    .replace(REGEX.MDX_CODE_BLOCKS, "")
-    .replace(REGEX.MDX_LINKS, "$1")
-    .replace(REGEX.MDX_TABLE_ROWS, "")
-    .replace(REGEX.MDX_SPECIAL_CHARS, "")
-    .replace(REGEX.NEWLINES, " ")
-    .replace(REGEX.WHITESPACES, " ")
-    .trim();
-
-export const calculateReadingTime = (content: string): number => {
-  const plainText = stripMdxForSpeech(content);
-  const words = plainText
-    .split(REGEX.WHITESPACES_SINGLE)
-    .filter((word) => word.length > 0).length;
-  return Math.ceil(words / 200);
+  return titleMatch ? titleMatch[1].trim() : "";
 };
 
 export const extractExcerptFromMdx = (content: string): string => {
@@ -104,6 +29,63 @@ export const extractExcerptFromMdx = (content: string): string => {
   return `${plain.slice(0, maxLength).trim()}…`;
 };
 
+export const readBlogMDXFile = async ({
+  slug,
+}: {
+  slug: string;
+}): Promise<{
+  title: string;
+  content: string;
+  excerpt: string;
+}> => {
+  const contentPath = path.join(
+    process.cwd(),
+    "src",
+    "posts",
+    slug,
+    "page.mdx"
+  );
+
+  const content = await fs.readFile(contentPath, "utf-8");
+  const title = extractTitleFromMdx(content);
+  const excerpt = extractExcerptFromMdx(content);
+
+  return {
+    title,
+    content,
+    excerpt,
+  };
+};
+
+export const getAllBlogFullSlugs = async (): Promise<{
+  blogSlugs: { slug: string; title: string }[];
+}> => {
+  const contentDir = path.join(process.cwd(), "src", "posts");
+  const entries = await fs.readdir(contentDir, { withFileTypes: true });
+
+  const slugs = await Promise.all(
+    entries
+      .filter((entry) => entry.isDirectory())
+      .map(async (entry) => {
+        try {
+          const { title } = await readBlogMDXFile({ slug: entry.name });
+
+          return { slug: `/blog/${entry.name}`, title };
+        } catch {
+          return null;
+        }
+      })
+  );
+
+  const blogSlugs = slugs.filter(
+    (item): item is { slug: string; title: string } => item !== null
+  );
+
+  return {
+    blogSlugs,
+  };
+};
+
 export const slugify = (text: string): string => {
   return text
     .toLowerCase()
@@ -111,6 +93,27 @@ export const slugify = (text: string): string => {
     .replace(REGEX.SLUG_INVALID_CHARS, "");
 };
 
+// Text to speech
+export const stripMdxForSpeech = (text: string): string =>
+  text
+    .replace(REGEX.MDX_HTML_TAGS, "")
+    .replace(REGEX.MDX_CODE_BLOCKS, "")
+    .replace(REGEX.MDX_LINKS, "$1")
+    .replace(REGEX.MDX_TABLE_ROWS, "")
+    .replace(REGEX.MDX_SPECIAL_CHARS, "")
+    .replace(REGEX.NEWLINES, " ")
+    .replace(REGEX.WHITESPACES, " ")
+    .trim();
+
+export const calculateReadingTime = (content: string): number => {
+  const plainText = stripMdxForSpeech(content);
+  const words = plainText
+    .split(REGEX.WHITESPACES_SINGLE)
+    .filter((word) => word.length > 0).length;
+  return Math.ceil(words / 200);
+};
+
+// SEO
 export const getSeoMetaData = ({
   title,
   description,
@@ -201,5 +204,42 @@ export const getOgImage = (title: string) => {
 
   return {
     ogImage,
+  };
+};
+
+export const getBlogJsonLd = ({
+  title,
+  excerpt,
+  slug,
+  // publishedTime,
+}: {
+  title: string;
+  excerpt: string;
+  slug: string;
+  // publishedTime: string;
+}): { ldJsonSchema: string } => {
+  //  api route
+  const { ogImage } = getOgImage(title);
+
+  const schema = {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    headline: title,
+    // datePublished: publishedTime,
+    // dateModified: publishedTime,
+    description: excerpt,
+    image: ogImage,
+    url: `${SITE_CONSTANTS.siteUrl}/blog/${slug}`,
+    author: {
+      "@type": "Person",
+      name: SITE_CONSTANTS.siteName,
+    },
+  };
+
+  return {
+    ldJsonSchema: JSON.stringify(schema).replace(
+      REGEX.JSON_LD_LESS_THAN,
+      "\\u003c"
+    ),
   };
 };

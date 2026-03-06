@@ -178,7 +178,6 @@ export function SearchCommand() {
     (slug: string) => {
       setOpen(false);
       setQuery("");
-      // @ts-expect-error
       router.push(slug);
     },
     [router]

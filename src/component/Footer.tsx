@@ -3,7 +3,7 @@ import { SITE_CONSTANTS } from "@/constants";
 
 export const Footer = () => {
   const links = [
-    { name: "Linkedin", url: SITE_CONSTANTS.linkedinUrl },
+    { name: "LinkedIn", url: SITE_CONSTANTS.linkedinUrl },
     { name: "GitHub", url: SITE_CONSTANTS.githubUrl },
   ];
 
@@ -13,7 +13,6 @@ export const Footer = () => {
         {links.map((link) => (
           <Link
             key={link.name}
-            // @ts-expect-error
             href={link.url}
             target="_blank"
             rel="noopener noreferrer"

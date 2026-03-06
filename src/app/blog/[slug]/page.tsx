@@ -6,13 +6,10 @@ import { CopyPageButton } from "@/component/CopyPageButton";
 import { GoHomeLink } from "@/component/GoHomeLink";
 import { MDXComponents } from "@/component/MDXComponents";
 import { TextToSpeech } from "@/component/TextToSpeech";
-import { SITE_CONSTANTS } from "@/constants";
-import { REGEX } from "@/constants/regex";
 import {
   calculateReadingTime,
-  extractExcerptFromMdx,
-  formatSlugToTitle,
-  getAllSlug,
+  getAllBlogFullSlugs,
+  getBlogJsonLd,
   getOgImage,
   getSeoMetaData,
   readBlogMDXFile,
@@ -26,9 +23,9 @@ type Props = {
 export const dynamicParams = false;
 
 export async function generateStaticParams() {
-  const { blogRoutes } = await getAllSlug();
+  const { blogSlugs } = await getAllBlogFullSlugs();
 
-  return blogRoutes.map((route) => ({
+  return blogSlugs.map((route) => ({
     slug: route.slug.replace("/blog/", ""),
   }));
 }
@@ -36,22 +33,15 @@ export async function generateStaticParams() {
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
 
-  let content: string;
-  try {
-    content = await readBlogMDXFile({ slug });
-  } catch {
-    return { title: "Blog Post Not Found" };
-  }
+  const { title, excerpt } = await readBlogMDXFile({ slug });
 
-  const title = formatSlugToTitle(slug);
-  const description = extractExcerptFromMdx(content);
   //  api route
   const { ogImage } = getOgImage(title);
   const fullSlug = `/blog/${slug}`;
 
   const { finalMetadata } = getSeoMetaData({
     title,
-    description,
+    description: excerpt,
     wholeSlug: fullSlug,
     ogImage,
     isFromBlogPage: true,
@@ -63,34 +53,14 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 export default async function BlogPage({ params }: Props) {
   const { slug } = await params;
 
-  let content: string;
-  try {
-    content = await readBlogMDXFile({ slug });
-  } catch {
+  const { title, excerpt, content } = await readBlogMDXFile({ slug });
+
+  if (!content) {
     notFound();
   }
 
+  const { ldJsonSchema } = getBlogJsonLd({ title, excerpt, slug });
   const components = MDXComponents();
-
-  const title = formatSlugToTitle(slug);
-  const description = extractExcerptFromMdx(content);
-  //  api route
-  const { ogImage } = getOgImage(title);
-
-  const ldJson = {
-    "@context": "https://schema.org",
-    "@type": "BlogPosting",
-    headline: title,
-    // datePublished: publishedTime,
-    // dateModified: publishedTime,
-    description: description,
-    image: ogImage,
-    url: `${SITE_CONSTANTS.siteUrl}/blog/${slug}`,
-    author: {
-      "@type": "Person",
-      name: SITE_CONSTANTS.siteName,
-    },
-  };
 
   return (
     <div className="space-y-4">
@@ -98,10 +68,7 @@ export default async function BlogPage({ params }: Props) {
         id="blog-json-ld"
         type="application/ld+json"
         dangerouslySetInnerHTML={{
-          __html: JSON.stringify(ldJson).replace(
-            REGEX.JSON_LD_LESS_THAN,
-            "\\u003c"
-          ),
+          __html: ldJsonSchema,
         }}
       />
 

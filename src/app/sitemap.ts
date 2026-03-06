@@ -1,9 +1,11 @@
 import type { MetadataRoute } from "next";
 import { SITE_CONSTANTS } from "@/constants";
-import { getAllSlug } from "@/utils";
+import { getAllBlogFullSlugs } from "@/utils";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const { allRoutes } = await getAllSlug();
+  const { blogSlugs } = await getAllBlogFullSlugs();
+
+  const allRoutes = ["", "/blog", ...blogSlugs.map((route) => route.slug)];
 
   return allRoutes.map((slug) => ({
     url: `${SITE_CONSTANTS.siteUrl}${slug}`,

@@ -29,9 +29,7 @@ export default function BlogPage() {
         Blog
       </h1>
 
-      <div className="my-6 sm:my-8">
-        <BlogLinks />
-      </div>
+      <BlogLinks />
     </section>
   );
 }
