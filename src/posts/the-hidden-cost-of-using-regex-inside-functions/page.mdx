@@ -1,4 +1,8 @@
-# The Hidden Cost of Using Regex Inside Functions
+---
+title: "The Hidden Cost of Using Regex Inside Functions"
+publishedAt: "2026-03-06"
+summary: "Discover why defining regular expressions inside functions can silently kill your application's performance and how to fix it."
+---
 
 <DateStamp>March 2026</DateStamp>
 
@@ -33,7 +37,11 @@ If you move the regex outside the function, it gets compiled exactly once when t
 
 ```ts
 // ❌ Don't do this
-export const formatCurrency = ({ value }: { value: number | string }): string => {
+export const formatCurrency = ({
+  value,
+}: {
+  value: number | string;
+}): string => {
   const currencyRegex = /\B(?=(\d{3})+(?!\d))/g;
   return value.toString().replace(currencyRegex, ",");
 };
@@ -47,7 +55,11 @@ By hoisting the regex to the module scope, the regex engine builds the state mac
 // ✅ Do this
 const CURRENCY_REGEX = /\B(?=(\d{3})+(?!\d))/g;
 
-export const formatCurrency = ({ value }: { value: number | string }): string => {
+export const formatCurrency = ({
+  value,
+}: {
+  value: number | string;
+}): string => {
   return value.toString().replace(CURRENCY_REGEX, ",");
 };
 ```
@@ -83,11 +95,17 @@ If you call `checkFoo({ inputStr: 'foo' })` twice, the first call returns `true`
   ```ts
   const regexCache = new Map<string, RegExp>();
 
-  export const checkDynamicPattern = ({ inputStr, pattern }: { inputStr: string; pattern: string }): boolean => {
+  export const checkDynamicPattern = ({
+    inputStr,
+    pattern,
+  }: {
+    inputStr: string;
+    pattern: string;
+  }): boolean => {
     if (!regexCache.has(pattern)) {
       regexCache.set(pattern, new RegExp(pattern));
     }
-    
+
     // Using non-null assertion since we just set it if it didn't exist
     const regex = regexCache.get(pattern)!;
     return regex.test(inputStr);

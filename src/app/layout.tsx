@@ -3,12 +3,11 @@ import { Header } from "@/component/Header";
 import "./globals.css";
 import { Analytics } from "@vercel/analytics/react";
 import { SpeedInsights } from "@vercel/speed-insights/next";
-import { Inter } from "next/font/google";
+import { Geist } from "next/font/google";
 import type { ReactNode } from "react";
 
-const inter = Inter({
+const inter = Geist({
   subsets: ["latin"],
-  display: "swap",
 });
 
 export default function RootLayout({

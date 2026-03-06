@@ -3,30 +3,33 @@ import path from "node:path";
 import type { Metadata } from "next";
 import { SITE_CONSTANTS } from "@/constants";
 import { REGEX } from "@/constants/regex";
-import type { SeoMetaDataConfig } from "@/interfaces";
 
 // Markdown
-const extractTitleFromMdx = (content: string): string => {
-  const titleMatch = content.match(REGEX.MDX_HEADING_1);
+export const parseFrontmatter = (fileContent: string) => {
+  const match = REGEX.MDX_FRONTMATTER_EXTRACT.exec(fileContent);
 
-  return titleMatch ? titleMatch[1].trim() : "";
-};
-
-export const extractExcerptFromMdx = (content: string): string => {
-  const withoutFrontmatter = content.replace(REGEX.MDX_FRONTMATTER, "");
-  const withoutTitle = withoutFrontmatter.replace(
-    REGEX.MDX_HEADING_1_NO_CAPTURE,
-    ""
-  );
-  const plain = stripMdxForSpeech(withoutTitle);
-
-  const maxLength = 130;
-
-  if (plain.length <= maxLength) {
-    return plain;
+  if (!match) {
+    return {
+      metadata: {},
+      content: fileContent,
+    };
   }
 
-  return `${plain.slice(0, maxLength).trim()}…`;
+  const frontMatterBlock = match[1];
+  const content = fileContent.replace(REGEX.MDX_FRONTMATTER_EXTRACT, "").trim();
+  const frontMatterLines = frontMatterBlock.trim().split("\n");
+  const metadata: Record<string, string> = {};
+
+  frontMatterLines.forEach((line) => {
+    const [key, ...valueArr] = line.split(":");
+    let value = valueArr.join(":").trim();
+    value = value.replace(REGEX.QUOTES, "$1"); // Remove quotes
+    if (key) {
+      metadata[key.trim()] = value;
+    }
+  });
+
+  return { metadata, content };
 };
 
 export const readBlogMDXFile = async ({
@@ -35,8 +38,9 @@ export const readBlogMDXFile = async ({
   slug: string;
 }): Promise<{
   title: string;
-  content: string;
   excerpt: string;
+  publishedAt: string;
+  content: string;
 }> => {
   const contentPath = path.join(
     process.cwd(),
@@ -46,14 +50,18 @@ export const readBlogMDXFile = async ({
     "page.mdx"
   );
 
-  const content = await fs.readFile(contentPath, "utf-8");
-  const title = extractTitleFromMdx(content);
-  const excerpt = extractExcerptFromMdx(content);
+  const rawContent = await fs.readFile(contentPath, "utf-8");
+
+  const {
+    metadata: { title, excerpt, publishedAt },
+    content,
+  } = parseFrontmatter(rawContent);
 
   return {
     title,
-    content,
     excerpt,
+    publishedAt,
+    content,
   };
 };
 
@@ -114,12 +122,22 @@ export const calculateReadingTime = (content: string): number => {
 };
 
 // SEO
+interface SeoMetaDataConfig {
+  title: string;
+  description: string;
+  wholeSlug: string | null;
+  ogImage: string;
+  publishedTime?: string;
+  isFromIndexPage?: boolean;
+  isFromBlogPage?: boolean;
+}
+
 export const getSeoMetaData = ({
   title,
   description,
   wholeSlug,
   ogImage,
-  // publishedTime,
+  publishedTime,
   isFromIndexPage,
   isFromBlogPage,
 }: SeoMetaDataConfig): { finalMetadata: Metadata } => {
@@ -168,8 +186,7 @@ export const getSeoMetaData = ({
         title: finalTitle,
         ...(description && { description }),
         type: isFromBlogPage ? "article" : "website",
-        /// TODO: add publishedTime
-        // publishedTime,
+        ...(isFromBlogPage && { publishedTime }),
         url,
         images: [
           {
@@ -211,12 +228,12 @@ export const getBlogJsonLd = ({
   title,
   excerpt,
   slug,
-  // publishedTime,
+  publishedTime,
 }: {
   title: string;
   excerpt: string;
   slug: string;
-  // publishedTime: string;
+  publishedTime: string;
 }): { ldJsonSchema: string } => {
   //  api route
   const { ogImage } = getOgImage(title);
@@ -225,8 +242,8 @@ export const getBlogJsonLd = ({
     "@context": "https://schema.org",
     "@type": "BlogPosting",
     headline: title,
-    // datePublished: publishedTime,
-    // dateModified: publishedTime,
+    datePublished: publishedTime,
+    dateModified: new Date().toISOString(),
     description: excerpt,
     image: ogImage,
     url: `${SITE_CONSTANTS.siteUrl}/blog/${slug}`,

@@ -33,7 +33,7 @@ export async function generateStaticParams() {
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
 
-  const { title, excerpt } = await readBlogMDXFile({ slug });
+  const { title, excerpt, publishedAt } = await readBlogMDXFile({ slug });
 
   //  api route
   const { ogImage } = getOgImage(title);
@@ -44,6 +44,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     description: excerpt,
     wholeSlug: fullSlug,
     ogImage,
+    publishedTime: publishedAt,
     isFromBlogPage: true,
   });
 
@@ -53,13 +54,20 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 export default async function BlogPage({ params }: Props) {
   const { slug } = await params;
 
-  const { title, excerpt, content } = await readBlogMDXFile({ slug });
+  const { title, excerpt, content, publishedAt } = await readBlogMDXFile({
+    slug,
+  });
 
   if (!content) {
     notFound();
   }
 
-  const { ldJsonSchema } = getBlogJsonLd({ title, excerpt, slug });
+  const { ldJsonSchema } = getBlogJsonLd({
+    title,
+    excerpt,
+    slug,
+    publishedTime: publishedAt,
+  });
   const components = MDXComponents();
 
   return (
@@ -83,6 +91,9 @@ export default async function BlogPage({ params }: Props) {
         </div>
       </div>
       <article className="markdown prose prose-sm prose-invert max-w-none sm:prose-base">
+        <h1 className="mb-4 text-3xl font-bold tracking-tight text-zinc-100 sm:text-4xl">
+          {title}
+        </h1>
         <MDXRemote
           source={content}
           components={components}

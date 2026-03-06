@@ -11,6 +11,8 @@ export const REGEX = {
   WHITESPACES: /\s+/g,
   WHITESPACES_SINGLE: /\s+/,
   MDX_FRONTMATTER: /^---[\s\S]*?---/,
+  MDX_FRONTMATTER_EXTRACT: /---\s*([\s\S]*?)\s*---/,
   SLUG_INVALID_CHARS: /[^a-z0-9-]/g,
   JSON_LD_LESS_THAN: /</g,
+  QUOTES: /^['"](.*)['"]$/,
 };
