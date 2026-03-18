@@ -65,6 +65,27 @@ const nextConfig: NextConfig = {
       },
     ];
   },
+  // biome-ignore lint/suspicious/useAwait: Next.js config functions are often async
+  async rewrites() {
+    return [
+      {
+        source: "/blog/:slug",
+        has: [
+          {
+            type: "header",
+            key: "accept",
+            value: "(.*)text/markdown(.*)",
+          },
+        ],
+        destination: "/blog/md/:slug",
+      },
+      // Explicit .md extension also serves markdown
+      {
+        source: "/blog/:slug.md",
+        destination: "/blog/md/:slug",
+      },
+    ];
+  },
   logging: {
     fetches: {
       fullUrl: true,
