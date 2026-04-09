@@ -1,5 +1,20 @@
 import type { NextConfig } from "next";
 
+const isDevelopmentMode = process.env.NODE_ENV === "development";
+
+const cspHeader = `
+    default-src 'self';
+    script-src 'self' 'unsafe-inline'${isDevelopmentMode ? " 'unsafe-eval'" : ""};
+    style-src 'self' 'unsafe-inline';
+    img-src 'self' blob: data:;
+    font-src 'self';
+    object-src 'none';
+    base-uri 'self';
+    form-action 'self';
+    frame-ancestors 'none';
+    upgrade-insecure-requests;
+`;
+
 const nextConfig: NextConfig = {
   reactCompiler: true,
   transpilePackages: ["next-mdx-remote"],
@@ -36,6 +51,10 @@ const nextConfig: NextConfig = {
           {
             key: "X-DNS-Prefetch-Control",
             value: "on",
+          },
+          {
+            key: "Content-Security-Policy",
+            value: cspHeader.replace(/\n/g, ""),
           },
           ...(process.env.NEXT_PUBLIC_VERCEL_ENV === "production"
             ? [
@@ -93,6 +112,9 @@ const nextConfig: NextConfig = {
   },
   experimental: {
     turbopackFileSystemCacheForDev: false,
+    sri: {
+      algorithm: "sha256", // or 'sha384' or 'sha512'
+    },
   },
 };
 
