@@ -3,7 +3,8 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { SearchCommand } from "@/component/SearchCommand";
-import { ThemeToggle } from "@/component/ThemeToggle";
+
+// import { ThemeToggle } from "@/component/ThemeToggle";
 
 const NAV_LINKS = [
   { href: "/", label: "Home" },
@@ -36,7 +37,7 @@ export function Header() {
           })}
         </nav>
         <div className="flex shrink-0 items-center gap-2 sm:gap-3">
-          <ThemeToggle />
+          {/* <ThemeToggle /> */}
           <SearchCommand />
         </div>
       </div>
