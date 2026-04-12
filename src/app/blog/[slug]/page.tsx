@@ -90,7 +90,7 @@ export default async function BlogPage({ params }: Props) {
           <CopyPageButton content={content} />
         </div>
       </div>
-      <article className="markdown prose prose-sm prose-invert max-w-none sm:prose-base">
+      <article className="markdown prose prose-sm prose-invert max-w-none sm:prose-base mb-24">
         <h1 className="mb-4 text-3xl font-bold tracking-tight text-zinc-100 sm:text-4xl">
           {title}
         </h1>

@@ -18,6 +18,7 @@ const cspHeader = `
 
 const nextConfig: NextConfig = {
   reactCompiler: true,
+  poweredByHeader: false,
   transpilePackages: ["next-mdx-remote"],
   images: {
     localPatterns: [
