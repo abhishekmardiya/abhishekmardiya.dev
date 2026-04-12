@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@custom-variant dark (&:where(.dark, .dark *));
 @plugin "@tailwindcss/typography";
 
 @theme {
@@ -8,7 +9,22 @@
     "Courier New", monospace;
 }
 
+/* sugar-high: token colors via inline `color: var(--sh-*)` — tune per theme */
 :root {
+  --sh-identifier: #27272a;
+  --sh-keyword: #6d28d9;
+  --sh-string: #15803d;
+  --sh-class: #1d4ed8;
+  --sh-property: #0f766e;
+  --sh-entity: #c2410c;
+  --sh-jsxliterals: #1e40af;
+  --sh-sign: #52525b;
+  --sh-comment: #71717a;
+  --sh-space: #f4f4f5;
+  --sh-break: transparent;
+}
+
+.dark {
   --sh-identifier: #e6edf3;
   --sh-class: #7aa2f7;
   --sh-sign: #89ddff;
@@ -18,6 +34,8 @@
   --sh-jsxliterals: #7aa2f7;
   --sh-property: #73daca;
   --sh-entity: #e0af68;
+  --sh-space: #16161e;
+  --sh-break: transparent;
 }
 
 html {
@@ -55,6 +73,45 @@ body {
   margin-top: -0.1rem !important;
 }
 
+.markdown > h1 {
+  color: var(--color-zinc-900);
+}
+
+.dark .markdown > h1 {
+  color: var(--color-zinc-100);
+}
+
+/*
+  prose-invert defaults to --tw-prose-invert-pre-bg: rgb(0 0 0 / 50%).
+  sugar-high colors whitespace with var(--sh-space). Overriding --sh-space to
+  a dark value on .markdown while light-mode pre stays #f4f4f5 made every
+  space character read as gray “line highlights”; keep light spaces aligned
+  with :root --sh-space. Dark theme already sets --sh-space on .dark.
+*/
+.markdown {
+  --tw-prose-invert-pre-bg: #16161e;
+}
+
+.markdown :is(h2, h3, h4, h5, h6) {
+  color: transparent;
+  background-image: linear-gradient(
+    90deg,
+    var(--color-slate-700),
+    var(--color-sky-700)
+  );
+  -webkit-background-clip: text;
+  background-clip: text;
+  width: fit-content;
+}
+
+.dark .markdown :is(h2, h3, h4, h5, h6) {
+  background-image: linear-gradient(
+    90deg,
+    var(--color-slate-300),
+    var(--color-sky-400)
+  );
+}
+
 /* Blockquotes: remove default italic and quotation marks, make bold */
 .prose blockquote {
   font-style: normal;
@@ -75,12 +132,20 @@ h4 {
 }
 
 pre {
-  background-color: #16161e;
+  background-color: #f4f4f5;
   border-radius: 0.5rem;
   overflow-x: auto;
   padding: 0.75rem;
   margin: 1rem 0;
   line-height: 1;
+}
+
+.dark pre {
+  background-color: #16161e;
+}
+
+.dark .markdown pre {
+  background-color: #16161e;
 }
 
 @media (min-width: 640px) {
@@ -104,8 +169,12 @@ code {
   font-size: 0.875rem;
   padding: 0.2em 0.25em;
   border-radius: 0.3em;
-  background-color: var(--color-zinc-800);
+  background-color: var(--color-zinc-200);
   word-break: break-word;
+}
+
+.dark code {
+  background-color: var(--color-zinc-800);
 }
 
 /* Inline code in prose: minimal padding to avoid awkward gaps before punctuation */
@@ -121,11 +190,21 @@ code {
 }
 
 pre code {
+  display: block;
   background-color: transparent;
   padding: 0;
   border: none;
   font-size: 0.875rem;
   line-height: 1.5;
+}
+
+/* Beat `.dark code` (zinc-800); inline code would paint bg per line box and stripe against `pre`. */
+.dark pre code {
+  background-color: transparent;
+}
+
+pre code .sh__line {
+  background-color: transparent;
 }
 
 pre code .sh__token--identifier {
@@ -134,6 +213,10 @@ pre code .sh__token--identifier {
 
 code:not(pre code) span {
   font-weight: 500;
+  color: var(--color-zinc-800) !important;
+}
+
+.dark code:not(pre code) span {
   color: var(--color-zinc-200) !important;
 }
 
@@ -142,6 +225,10 @@ pre code span {
 }
 
 hr {
+  color: var(--color-zinc-300);
+}
+
+.dark hr {
   color: var(--color-zinc-600);
 }
 

@@ -1,0 +1,150 @@
+---
+title: "How to Secure Cookies in Web Applications"
+publishedAt: "2026-04-12"
+excerpt: "Learn which cookie attributes matter most, the common mistakes that weaken session security, and how to set secure cookies correctly in Next.js."
+---
+
+<DateStamp>April 2026</DateStamp>
+
+Cookies often store sessions, refresh tokens, CSRF tokens, or other sensitive state. The problem is not cookies themselves. The problem is insecure cookie configuration.
+
+A secure cookie usually comes down to scope and exposure:
+
+- who can receive it
+- where it is available
+- how long it lives
+- whether JavaScript can read it
+
+## Expires and Max-Age
+
+These control cookie lifetime.
+
+- `Expires` sets an exact date
+- `Max-Age` sets a lifetime in seconds
+
+For auth cookies, shorter lifetimes reduce risk if a cookie is stolen.
+
+```txt
+Set-Cookie: session=abc123; Max-Age=1800; Path=/; HttpOnly; Secure; SameSite=Lax
+```
+
+## Domain
+
+`Domain` decides which domains can access the cookie.
+
+If you do not set it, the cookie stays on the current host, which is usually safer.
+
+```txt
+Domain=example.com
+```
+
+That shares the cookie with:
+
+- `example.com`
+- `api.example.com`
+- `www.example.com`
+
+Only set `Domain` when you really need cross-subdomain sharing.
+
+## Path
+
+`Path` limits where the cookie is sent.
+
+```txt
+Path=/dashboard
+```
+
+That sends the cookie only for routes under `/dashboard`.
+
+Use `Path=/` when the cookie should be available site-wide.
+
+## Secure
+
+`Secure` means the cookie is only sent over HTTPS.
+
+```txt
+Set-Cookie: session=abc123; Secure
+```
+
+For session or auth cookies, this should be a default in production.
+
+## HttpOnly
+
+`HttpOnly` prevents JavaScript from reading the cookie through `document.cookie`.
+
+```txt
+Set-Cookie: session=abc123; HttpOnly
+```
+
+This reduces the impact of XSS because injected scripts cannot easily steal the cookie.
+
+## SameSite
+
+`SameSite` controls cross-site behavior.
+
+- `Strict`: only same-site requests
+- `Lax`: same-site requests plus top-level navigation
+- `None`: all cross-site requests, and it must also use `Secure`
+
+```txt
+Set-Cookie: session=abc123; SameSite=Strict
+```
+
+For many session cookies, `Lax` or `Strict` is the right choice.
+
+## Safe Defaults
+
+If a cookie stores authentication or sensitive state, start with:
+
+- `HttpOnly`
+- `Secure`
+- `SameSite=Lax` or `SameSite=Strict`
+- `Path=/`
+- short `Max-Age`
+- no `Domain` unless needed
+
+## Common Mistakes
+
+- Leaving session cookies readable from JavaScript by skipping `HttpOnly`
+- Using `SameSite=None` without actually needing cross-site requests
+- Setting a broad `Domain` for no reason
+- Giving sensitive cookies very long lifetimes
+- Assuming `Path` alone makes a cookie secure
+
+The goal is simple: reduce unnecessary exposure.
+
+## Next.js Example
+
+If you are using the Next.js App Router, a clean way to set a secure session cookie is in a Route Handler.
+
+```ts
+import { NextResponse } from "next/server";
+
+export const POST = async (): Promise<NextResponse> => {
+  const response: NextResponse = NextResponse.json({ ok: true });
+
+  response.cookies.set("session", "token-value", {
+    httpOnly: true,
+    secure: true,
+    sameSite: "strict",
+    maxAge: 60 * 60 * 24 * 30,
+    path: "/",
+  });
+
+  return response;
+};
+```
+
+This example does a few important things correctly:
+
+- `httpOnly: true` keeps the cookie out of `document.cookie`
+- `secure: true` ensures it is only sent over HTTPS
+- `sameSite: "strict"` prevents the cookie from being sent in cross-site requests
+- `maxAge` gives the cookie a defined lifetime
+- `path: "/"` makes the cookie available across the app
+
+If your app needs a slightly less strict default for normal navigation, `sameSite: "lax"` is often a practical choice. If you need cross-site requests, use `sameSite: "none"` and keep `secure: true`.
+
+## Final Takeaway
+
+Securing cookies is about choosing the narrowest safe defaults. For most production apps, that means `HttpOnly`, `Secure`, a deliberate `SameSite` value, a reasonable lifetime, and the smallest scope possible.

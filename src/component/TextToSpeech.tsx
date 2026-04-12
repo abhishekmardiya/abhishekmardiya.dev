@@ -83,11 +83,11 @@ export const TextToSpeech = ({ text }: { text: string }) => {
   }
 
   return (
-    <div className="flex items-center gap-4 text-sm text-gray-400 whitespace-nowrap">
+    <div className="flex items-center gap-4 text-sm text-zinc-600 dark:text-gray-400 whitespace-nowrap">
       <button
         type="button"
         onClick={isSpeaking ? handlePause : handlePlay}
-        className="flex items-center gap-1.5 hover:text-gray-200 transition-colors cursor-pointer"
+        className="flex items-center gap-1.5 hover:text-zinc-900 dark:hover:text-gray-200 transition-colors cursor-pointer"
       >
         {isSpeaking ? (
           <svg
@@ -133,7 +133,7 @@ export const TextToSpeech = ({ text }: { text: string }) => {
         <button
           type="button"
           onClick={handleStop}
-          className="flex items-center gap-1.5 hover:text-gray-200 transition-colors cursor-pointer"
+          className="flex items-center gap-1.5 hover:text-zinc-900 dark:hover:text-gray-200 transition-colors cursor-pointer"
         >
           <svg
             className="w-4 h-4"

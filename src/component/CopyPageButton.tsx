@@ -23,7 +23,7 @@ export function CopyPageButton({ content }: Props) {
     <button
       type="button"
       onClick={handleCopy}
-      className="flex items-center gap-2 rounded-lg border border-zinc-600 bg-zinc-800/50 px-3 py-2 text-xs text-zinc-300 hover:bg-zinc-700/50 hover:text-zinc-100 transition-colors focus:outline-none focus:ring-2 focus:ring-zinc-500 cursor-pointer sm:text-sm font-semibold whitespace-nowrap"
+      className="flex items-center gap-2 rounded-lg border border-zinc-300 bg-zinc-100/80 px-3 py-2 text-xs text-zinc-700 hover:border-zinc-400 hover:bg-white hover:text-zinc-900 transition-colors focus:outline-none focus:ring-2 focus:ring-zinc-400 cursor-pointer dark:border-zinc-600 dark:bg-zinc-800/50 dark:text-zinc-300 dark:hover:bg-zinc-700/50 dark:hover:text-zinc-100 dark:focus:ring-zinc-500 sm:text-sm font-semibold whitespace-nowrap"
       aria-label={copied ? "Copied" : "Copy page as markdown"}
     >
       {copied ? (

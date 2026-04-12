@@ -83,15 +83,15 @@ export default async function BlogPage({ params }: Props) {
       <div className="sm:mt-10 flex flex-wrap items-center justify-between gap-4">
         <GoHomeLink />
         <div className="flex flex-wrap items-center gap-3 sm:gap-4">
-          <span className="text-sm text-gray-400 whitespace-nowrap">
+          <span className="text-sm text-zinc-500 dark:text-gray-400 whitespace-nowrap">
             {calculateReadingTime(content)} min read
           </span>
           <TextToSpeech text={stripMdxForSpeech(content)} />
           <CopyPageButton content={content} />
         </div>
       </div>
-      <article className="markdown prose prose-sm prose-invert max-w-none sm:prose-base mb-24">
-        <h1 className="mb-4 text-3xl font-bold tracking-tight text-zinc-100 sm:text-4xl">
+      <article className="markdown prose prose-sm prose-zinc max-w-none sm:prose-base mb-24 dark:prose-invert">
+        <h1 className="mb-4 text-3xl font-bold tracking-tight text-zinc-900 dark:text-zinc-100 sm:text-4xl">
           {title}
         </h1>
         <MDXRemote

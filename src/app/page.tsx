@@ -38,7 +38,7 @@ export default function Page() {
           <h2 className="text-lg font-medium sm:text-xl">Blog</h2>
           <Link
             href="/blog"
-            className="text-sm text-zinc-400 hover:text-zinc-100 active:text-zinc-200 transition-colors py-2 inline-flex items-center min-h-11"
+            className="text-sm text-zinc-600 hover:text-zinc-900 active:text-zinc-800 dark:text-zinc-400 dark:hover:text-zinc-100 dark:active:text-zinc-200 transition-colors py-2 inline-flex items-center min-h-11"
           >
             View all
           </Link>

@@ -34,7 +34,7 @@ export function CopyCodeBlock({
       <button
         type="button"
         onClick={handleCopy}
-        className="absolute top-2 right-2 rounded p-2 text-zinc-400 bg-zinc-800/80 hover:bg-zinc-700 hover:text-zinc-200 transition-colors focus:outline-none focus:ring-2 focus:ring-zinc-500 cursor-pointer"
+        className="absolute top-2 right-2 rounded p-2 text-zinc-600 bg-white/90 border border-zinc-200 hover:bg-zinc-50 hover:text-zinc-900 transition-colors focus:outline-none focus:ring-2 focus:ring-zinc-400 cursor-pointer dark:text-zinc-400 dark:bg-zinc-800/80 dark:border-transparent dark:hover:bg-zinc-700 dark:hover:text-zinc-200 dark:focus:ring-zinc-500"
         aria-label={copied ? "Copied" : "Copy code"}
       >
         {copied ? (

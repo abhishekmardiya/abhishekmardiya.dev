@@ -16,7 +16,7 @@ export const Footer = () => {
             href={link.url}
             target="_blank"
             rel="noopener noreferrer"
-            className="text-zinc-400 hover:text-blue-500 active:text-blue-400 transition-all duration-200 inline-flex items-center min-h-11 py-2 px-3"
+            className="text-zinc-600 hover:text-blue-600 active:text-blue-500 dark:text-zinc-400 dark:hover:text-blue-400 dark:active:text-blue-300 transition-all duration-200 inline-flex items-center min-h-11 py-2 px-3"
           >
             {link.name}
           </Link>

@@ -33,7 +33,7 @@ type BlockquoteProps = ComponentPropsWithoutRef<"blockquote">;
 const components = {
   h1: (props: HeadingProps) => (
     <h1
-      className="font-medium text-2xl text-zinc-200 sm:text-4xl pt-6 mb-0! wrap-break-words"
+      className="font-medium text-2xl text-zinc-900 dark:text-zinc-200 sm:text-4xl pt-6 mb-0! wrap-break-words"
       {...props}
     />
   ),
@@ -43,7 +43,7 @@ const components = {
     return (
       <h2
         id={slug}
-        className="group text-zinc-200 font-medium mt-6 mb-2 text-xl sm:mt-8 sm:mb-3 sm:text-2xl scroll-mt-20 flex items-center gap-2 cursor-pointer wrap-break-words max-w-full"
+        className="group font-medium mt-6 mb-2 text-xl sm:mt-8 sm:mb-3 sm:text-2xl scroll-mt-20 flex items-center gap-2 cursor-pointer wrap-break-words max-w-full"
         {...props}
       >
         <span className="wrap-break-words">{children}</span>
@@ -76,7 +76,7 @@ const components = {
     return (
       <h3
         id={slug}
-        className="text-zinc-200 font-medium mt-6 mb-2 text-base scroll-mt-6 sm:mt-8 sm:mb-3 sm:text-lg wrap-break-words"
+        className="font-medium mt-6 mb-2 text-base scroll-mt-6 sm:mt-8 sm:mb-3 sm:text-lg wrap-break-words"
         {...props}
       >
         {children}
@@ -85,12 +85,15 @@ const components = {
   },
   p: (props: ParagraphProps) => (
     <p
-      className="text-zinc-300 text-[15px] sm:text-base wrap-break-words"
+      className="text-zinc-700 dark:text-zinc-300 text-[15px] sm:text-base wrap-break-words"
       {...props}
     />
   ),
   ul: (props: ListProps) => (
-    <ul className="text-zinc-300 list-disc pl-5 space-y-1" {...props} />
+    <ul
+      className="text-zinc-700 dark:text-zinc-300 list-disc pl-5 space-y-1"
+      {...props}
+    />
   ),
   li: (props: ListItemProps) => <li className="pl-1" {...props} />,
   strong: (props: ComponentPropsWithoutRef<"strong">) => (
@@ -137,7 +140,7 @@ const components = {
   },
   blockquote: (props: BlockquoteProps) => (
     <blockquote
-      className="ml-[0.075em] border-l-3 border-zinc-600 pl-3 sm:pl-4 text-[15px] sm:text-base text-zinc-400 **:text-zinc-400!"
+      className="ml-[0.075em] border-l-3 border-zinc-300 pl-3 sm:pl-4 text-[15px] sm:text-base text-zinc-600 **:text-zinc-600! dark:border-zinc-600 dark:text-zinc-400 dark:**:text-zinc-400!"
       {...props}
     />
   ),
@@ -159,7 +162,7 @@ const components = {
     );
   },
   DateStamp: ({ children, ...props }: ComponentPropsWithoutRef<"p">) => (
-    <p className="text-zinc-500 text-sm pb-4" {...props}>
+    <p className="text-zinc-600 dark:text-zinc-500 text-sm pb-4" {...props}>
       {children} - {SITE_CONSTANTS.siteName}
     </p>
   ),

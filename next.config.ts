@@ -55,6 +55,18 @@ const nextConfig: NextConfig = {
             value: "on",
           },
           {
+            key: "Accept-CH",
+            value: "Sec-CH-Prefers-Color-Scheme",
+          },
+          {
+            key: "Critical-CH",
+            value: "Sec-CH-Prefers-Color-Scheme",
+          },
+          {
+            key: "Vary",
+            value: "Sec-CH-Prefers-Color-Scheme",
+          },
+          {
             key: "Content-Security-Policy",
             value: cspHeader.replace(/\n/g, ""),
           },

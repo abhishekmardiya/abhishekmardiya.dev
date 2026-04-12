@@ -203,7 +203,7 @@ export function SearchCommand() {
         onClick={() => {
           setOpen(true);
         }}
-        className="inline-flex min-w-fit items-center justify-between gap-2 rounded-md border border-zinc-700 bg-zinc-900/80 px-4 py-2 text-sm text-zinc-400 transition-colors hover:border-zinc-600 hover:text-zinc-200 cursor-pointer sm:gap-10"
+        className="inline-flex min-w-fit cursor-pointer items-center justify-between gap-2 rounded-md border border-zinc-300 bg-zinc-100/80 px-4 py-2 text-sm text-zinc-600 transition-colors dark:border-zinc-700 dark:bg-zinc-800/90 dark:text-zinc-300 sm:gap-10"
         aria-label="Search blog (⌘K)"
       >
         <span className="flex items-center gap-2">
@@ -217,7 +217,7 @@ export function SearchCommand() {
         <Dialog.Portal>
           <Dialog.Overlay className="fixed inset-0 z-50 bg-black/60" />
           <Dialog.Content
-            className="fixed left-1/2 top-1/2 z-50 w-[calc(100%-2rem)] max-w-140 -translate-x-1/2 -translate-y-1/2 rounded-lg border border-zinc-700 bg-zinc-900 p-0 shadow-xl"
+            className="fixed left-1/2 top-1/2 z-50 w-[calc(100%-2rem)] max-w-140 -translate-x-1/2 -translate-y-1/2 rounded-lg border border-zinc-200 bg-white p-0 shadow-xl dark:border-zinc-700 dark:bg-zinc-900"
             aria-describedby={undefined}
           >
             <Dialog.Title className="sr-only">Search</Dialog.Title>
@@ -226,10 +226,10 @@ export function SearchCommand() {
                 placeholder="Search..."
                 value={query}
                 onValueChange={setQuery}
-                className="border-b border-zinc-800 px-4 py-3 text-zinc-100 placeholder:text-zinc-500 focus:outline-none focus:ring-0 min-w-full"
+                className="border-b border-zinc-200 px-4 py-3 text-zinc-900 placeholder:text-zinc-500 focus:outline-none focus:ring-0 min-w-full dark:border-zinc-800 dark:text-zinc-100"
               />
               <CommandList className="max-h-80 overflow-y-auto p-2">
-                <CommandEmpty className="py-6 text-center text-sm text-zinc-500">
+                <CommandEmpty className="py-6 text-center text-sm text-zinc-500 dark:text-zinc-500">
                   No results found.
                 </CommandEmpty>
                 {groupedResults.map((group) => (
@@ -239,14 +239,14 @@ export function SearchCommand() {
                       onSelect={() => {
                         handleSelect(group.slug);
                       }}
-                      className="flex cursor-pointer flex-col items-start gap-0.5 rounded-md px-3 py-2.5 pl-6 text-zinc-200 aria-selected:bg-zinc-800 aria-selected:text-zinc-100"
+                      className="flex cursor-pointer flex-col items-start gap-0.5 rounded-md px-3 py-2.5 pl-6 text-zinc-800 aria-selected:bg-zinc-100 aria-selected:text-zinc-900 dark:text-zinc-200 dark:aria-selected:bg-zinc-800 dark:aria-selected:text-zinc-100"
                     >
                       <span className="flex items-center gap-2 font-medium">
-                        <DocumentIcon className="size-4 shrink-0 text-zinc-500" />
+                        <DocumentIcon className="size-4 shrink-0 text-zinc-500 dark:text-zinc-500" />
                         {group.title}
                       </span>
                       {Boolean(group.excerpt) && (
-                        <span className="line-clamp-1 pl-6 text-xs text-zinc-400">
+                        <span className="line-clamp-1 pl-6 text-xs text-zinc-500 dark:text-zinc-400">
                           {group.excerpt}
                         </span>
                       )}
@@ -258,13 +258,13 @@ export function SearchCommand() {
                         onSelect={() => {
                           handleSelect(section.id);
                         }}
-                        className="flex cursor-pointer flex-col items-start gap-0.5 rounded-md px-3 py-2.5 pl-6 text-zinc-200 aria-selected:bg-zinc-800 aria-selected:text-zinc-100"
+                        className="flex cursor-pointer flex-col items-start gap-0.5 rounded-md px-3 py-2.5 pl-6 text-zinc-800 aria-selected:bg-zinc-100 aria-selected:text-zinc-900 dark:text-zinc-200 dark:aria-selected:bg-zinc-800 dark:aria-selected:text-zinc-100"
                       >
                         <span className="flex items-center gap-2 font-medium">
-                          <HashIcon className="size-4 shrink-0 text-zinc-500" />
+                          <HashIcon className="size-4 shrink-0 text-zinc-500 dark:text-zinc-500" />
                           {section.heading}
                         </span>
-                        <span className="line-clamp-1 pl-6 text-xs text-zinc-400">
+                        <span className="line-clamp-1 pl-6 text-xs text-zinc-500 dark:text-zinc-400">
                           {section.snippet}
                         </span>
                       </CommandItem>

@@ -28,7 +28,7 @@ export default function NotFound() {
     <div className="flex flex-col items-center justify-center min-h-[60vh] space-y-10 px-4">
       {/* ASCII Cat Container */}
       <div className="relative group select-none">
-        <pre className="font-mono text-4xl sm:text-5xl md:text-6xl leading-tight text-zinc-300 transition-colors duration-300 group-hover:text-blue-400">
+        <pre className="font-mono text-4xl sm:text-5xl md:text-6xl leading-tight text-zinc-600 transition-colors duration-300 group-hover:text-blue-600 dark:text-zinc-300 dark:group-hover:text-blue-400">
           {`   /\\_/\\  `}
           <br />
           {`  ( ${isBlinking ? "-.-" : "o.o"} ) `}
@@ -38,14 +38,14 @@ export default function NotFound() {
       </div>
 
       <div className="text-center space-y-4 max-w-md">
-        <h1 className="text-3xl sm:text-4xl font-bold tracking-tight text-zinc-100">
+        <h1 className="text-3xl sm:text-4xl font-bold tracking-tight text-zinc-900 dark:text-zinc-100">
           404 Not Found
         </h1>
       </div>
 
       <Link
         href="/"
-        className="inline-flex items-center gap-2 px-6 py-2.5 bg-zinc-800 hover:bg-zinc-700 text-zinc-200 hover:text-white font-medium rounded-xl transition-all border border-zinc-700 hover:border-zinc-500 shadow-sm group active:scale-95"
+        className="inline-flex items-center gap-2 px-6 py-2.5 bg-zinc-900 hover:bg-zinc-800 text-white font-medium rounded-xl transition-all border border-zinc-800 hover:border-zinc-700 shadow-sm group active:scale-95 dark:bg-zinc-800 dark:hover:bg-zinc-700 dark:text-zinc-200 dark:hover:text-white dark:border-zinc-700 dark:hover:border-zinc-500"
       >
         <span className="group-hover:-translate-x-1 transition-transform">
           ←
