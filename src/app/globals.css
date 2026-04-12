@@ -78,7 +78,7 @@ body {
 }
 
 .dark .markdown > h1 {
-  color: var(--color-zinc-100);
+  color: var(--color-zinc-200);
 }
 
 /*
@@ -96,8 +96,8 @@ body {
   color: transparent;
   background-image: linear-gradient(
     90deg,
-    var(--color-slate-700),
-    var(--color-sky-700)
+    var(--color-sky-600),
+    var(--color-blue-700)
   );
   -webkit-background-clip: text;
   background-clip: text;
@@ -107,8 +107,8 @@ body {
 .dark .markdown :is(h2, h3, h4, h5, h6) {
   background-image: linear-gradient(
     90deg,
-    var(--color-slate-300),
-    var(--color-sky-400)
+    var(--color-sky-400),
+    var(--color-blue-400)
   );
 }
 
