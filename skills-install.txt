@@ -1,5 +1,0 @@
-npx --yes skills add vercel-labs/skills -s find-skills -a cursor -y && \
-npx --yes skills add vercel-labs/next-skills -s next-best-practices next-upgrade -a cursor -y && \
-npx --yes skills add vercel-labs/next-browser -s next-browser -a cursor -y && \
-npx --yes skills add vercel-labs/vercel-plugin -s nextjs -a cursor -y && \
-npx --yes skills add vercel-labs/agent-skills -s vercel-composition-patterns vercel-react-best-practices web-design-guidelines -a cursor -y

@@ -1,0 +1,161 @@
+---
+title: "How to Configure Security Headers in Next.js"
+publishedAt: "2026-04-12"
+excerpt: "Learn what the most important HTTP security headers do, why they matter, and how to configure them correctly in a Next.js app."
+---
+
+<DateStamp>April 2026</DateStamp>
+
+Security headers are small response rules that tell the browser how to behave. In Next.js, a few good defaults can reduce stack disclosure, limit referrer leakage, prevent MIME sniffing, and reinforce HTTPS.
+
+## Configure Headers In Next.js
+
+Most app-wide security headers belong in `next.config.ts`.
+
+```tsx
+import type { NextConfig } from "next";
+
+const nextConfig: NextConfig = {
+  poweredByHeader: false,
+  async headers() {
+    return [
+      {
+        source: "/:path*",
+        headers: [
+          {
+            key: "Referrer-Policy",
+            value: "origin-when-cross-origin",
+          },
+          {
+            key: "X-Content-Type-Options",
+            value: "nosniff",
+          },
+          {
+            key: "Strict-Transport-Security",
+            value: "max-age=63072000; includeSubDomains; preload",
+          },
+        ],
+      },
+    ];
+  },
+};
+
+export default nextConfig;
+```
+
+Use `poweredByHeader: false` for `X-Powered-By`, and use `headers()` for the rest.
+
+## X-Powered-By
+
+This header reveals the framework behind your app:
+
+```txt
+X-Powered-By: Next.js
+```
+
+It is not a vulnerability by itself, but it gives away unnecessary stack details. In Next.js, disable it like this:
+
+```tsx
+import type { NextConfig } from "next";
+
+const nextConfig: NextConfig = {
+  poweredByHeader: false,
+};
+
+export default nextConfig;
+```
+
+## Referrer-Policy
+
+This header controls how much of the current URL is shared when the user navigates elsewhere.
+
+If the user goes from:
+
+```txt
+https://example.com/account/security?tab=sessions
+```
+
+to another site, the browser may send the full URL, just the origin, or nothing, depending on the policy.
+
+For most Next.js apps, these are the useful choices:
+
+- `origin-when-cross-origin`: full URL on same-origin requests, only the origin on cross-origin requests
+- `strict-origin-when-cross-origin`: similar, but stricter on HTTPS to HTTP downgrades
+- `no-referrer`: sends nothing at all
+
+A practical default:
+
+```tsx
+{
+  key: "Referrer-Policy",
+  value: "origin-when-cross-origin",
+}
+```
+
+## X-Content-Type-Options: nosniff
+
+`nosniff` tells the browser not to guess a response type. That matters when a route says a response is plain text, but the body looks like something more dangerous.
+
+```tsx
+import { NextResponse } from "next/server";
+
+export async function GET(): Promise<NextResponse> {
+  return new NextResponse("<script>alert('xss')</script>", {
+    headers: {
+      "Content-Type": "text/plain",
+      "X-Content-Type-Options": "nosniff",
+    },
+  });
+}
+```
+
+Without `nosniff`, browsers may try MIME sniffing. With it, they are told to trust the declared `Content-Type`.
+
+## Strict-Transport-Security (HSTS)
+
+HSTS tells the browser to always use HTTPS after it has seen your site over HTTPS once.
+
+```txt
+Strict-Transport-Security: max-age=63072000; includeSubDomains; preload
+```
+
+What the directives mean:
+
+- `max-age`: how long the browser should remember the rule
+- `includeSubDomains`: apply it to subdomains too
+- `preload`: marks the domain as eligible for browser preload lists
+
+In practice:
+
+- on Vercel, HTTPS is already enforced at the platform edge
+- on self-hosted setups, redirects usually belong at the proxy or load balancer
+
+- HSTS is still useful because it teaches the browser to stop treating HTTPS as optional
+
+## X-XSS-Protection
+
+This header used to control old browser XSS filters:
+
+```txt
+X-XSS-Protection: 1; mode=block
+```
+
+`Today it is deprecated`. Modern browsers largely ignore it, and older behavior was inconsistent. In a modern Next.js app, rely on:
+
+- Content Security Policy
+- proper escaping
+- input validation and sanitization
+
+## Recommended Baseline
+
+If you want a clean starting point in Next.js, use:
+
+- `poweredByHeader: false`
+- `Referrer-Policy: origin-when-cross-origin`
+- `X-Content-Type-Options: nosniff`
+- `Strict-Transport-Security: max-age=63072000; includeSubDomains; preload`
+- `Content-Security-Policy` for real XSS hardening
+
+## Final Takeaway
+
+Security headers are not random strings to copy from old tutorials. In Next.js, they are straightforward browser rules you can set deliberately in `next.config.ts` to reduce leakage and tighten default browser behavior.

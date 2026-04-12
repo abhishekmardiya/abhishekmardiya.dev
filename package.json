@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "npm run search-index &&next dev",
+    "dev": "npm run search-index && next dev",
     "ts": "tsc --noEmit --watch",
     "search-index": "node scripts/build-search-index.mjs",
     "lint": "biome check",
