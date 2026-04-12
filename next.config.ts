@@ -4,7 +4,7 @@ const isDevelopmentMode = process.env.NODE_ENV === "development";
 
 const cspHeader = `
     default-src 'self';
-    script-src 'self' 'unsafe-inline'${isDevelopmentMode ? " 'unsafe-eval'" : ""};
+    script-src 'self' 'unsafe-inline'${isDevelopmentMode ? " 'unsafe-eval'" : ""} https://va.vercel-scripts.com;
     style-src 'self' 'unsafe-inline';
     img-src 'self' blob: data:;
     font-src 'self';
@@ -12,7 +12,7 @@ const cspHeader = `
     base-uri 'self';
     form-action 'self';
     frame-ancestors 'none';
-    connect-src 'self';
+    connect-src 'self' https://vitals.vercel-insights.com;
     ${isDevelopmentMode ? "" : "upgrade-insecure-requests;"}
 `;
 
@@ -53,18 +53,6 @@ const nextConfig: NextConfig = {
           {
             key: "X-DNS-Prefetch-Control",
             value: "on",
-          },
-          {
-            key: "Accept-CH",
-            value: "Sec-CH-Prefers-Color-Scheme",
-          },
-          {
-            key: "Critical-CH",
-            value: "Sec-CH-Prefers-Color-Scheme",
-          },
-          {
-            key: "Vary",
-            value: "Sec-CH-Prefers-Color-Scheme",
           },
           {
             key: "Content-Security-Policy",

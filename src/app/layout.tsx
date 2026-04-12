@@ -5,30 +5,24 @@ import "./globals.css";
 import { Analytics } from "@vercel/analytics/react";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { Geist } from "next/font/google";
-import { cookies, headers } from "next/headers";
 import type { ReactNode } from "react";
-import { THEME_COOKIE_NAME } from "@/constants/theme";
-import { resolveDocumentTheme } from "@/utils/resolve-document-theme";
 
 const inter = Geist({
   subsets: ["latin"],
 });
 
-export default async function RootLayout({
+export default function RootLayout({
   children,
 }: Readonly<{
   children: ReactNode;
 }>) {
-  const cookieStore = await cookies();
-  const headerStore = await headers();
-  const documentTheme = resolveDocumentTheme({
-    storedPreference: cookieStore.get(THEME_COOKIE_NAME)?.value,
-    secChPrefersColorScheme: headerStore.get("sec-ch-prefers-color-scheme"),
-  });
-  const htmlClassName = `${inter.className} ${documentTheme}`.trim();
-
   return (
-    <html lang="en" className={htmlClassName} data-scroll-behavior="smooth">
+    <html
+      lang="en"
+      className={`${inter.className} light`}
+      data-scroll-behavior="smooth"
+      suppressHydrationWarning
+    >
       <body className="antialiased tracking-tight overflow-x-hidden">
         <ThemeProvider>
           <Header />
