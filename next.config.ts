@@ -114,9 +114,6 @@ const nextConfig: NextConfig = {
   },
   experimental: {
     turbopackFileSystemCacheForDev: false,
-    sri: {
-      algorithm: "sha256", // or 'sha384' or 'sha512'
-    },
   },
 };
 
