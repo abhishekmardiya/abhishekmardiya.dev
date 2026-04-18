@@ -33,25 +33,26 @@ type BlockquoteProps = ComponentPropsWithoutRef<"blockquote">;
 const components = {
   h1: (props: HeadingProps) => (
     <h1
-      className="font-medium text-2xl text-zinc-900 dark:text-zinc-200 sm:text-4xl pt-6 mb-0! wrap-break-words"
+      className="font-medium text-2xl text-zinc-900 sm:text-4xl pt-6 mb-0! wrap-break-words dark:text-zinc-100"
       {...props}
     />
   ),
-  h2: ({ children, ...props }: HeadingProps) => {
+  h2: ({ children, className, ...props }: HeadingProps) => {
     const slug = slugify(getHeadingSlug(children));
+    const headingClassName = [
+      "font-medium mt-6 mb-2 text-xl sm:mt-8 sm:mb-3 sm:text-2xl scroll-mt-20 wrap-break-words max-w-full",
+      className,
+    ]
+      .filter(Boolean)
+      .join(" ");
 
     return (
-      <h2
-        id={slug}
-        className="group font-medium mt-6 mb-2 text-xl sm:mt-8 sm:mb-3 sm:text-2xl scroll-mt-20 flex items-center gap-2 cursor-pointer wrap-break-words max-w-full"
-        {...props}
-      >
-        <span className="wrap-break-words">{children}</span>
+      <h2 id={slug} className={headingClassName} {...props}>
         <Link
           href={`#${slug}`}
-          className="inline-flex shrink-0 items-center justify-center rounded p-0.5 no-underline"
-          aria-label={`Link to section: ${getHeadingSlug(children)}`}
+          className="group inline-flex max-w-full min-w-0 cursor-pointer items-center gap-1.5 no-underline outline-offset-2 focus-visible:rounded-sm focus-visible:outline-2 focus-visible:outline-blue-500 dark:focus-visible:outline-blue-400"
         >
+          <span className="min-w-0 wrap-break-words">{children}</span>
           <svg
             xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 24 24"
@@ -60,10 +61,10 @@ const components = {
             strokeWidth="2"
             strokeLinecap="round"
             strokeLinejoin="round"
-            className="size-4 opacity-0 group-hover:opacity-100 transition-opacity duration-150"
+            className="size-4 shrink-0 text-zinc-700 opacity-0 transition-opacity duration-150 group-hover:opacity-100 group-focus-within:opacity-100 dark:text-zinc-300"
             aria-hidden
           >
-            <title>Link to section</title>
+            <title>Permalink</title>
             <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71" />
             <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71" />
           </svg>

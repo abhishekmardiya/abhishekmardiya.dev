@@ -90,16 +90,18 @@ export default async function BlogPage({ params }: Props) {
           <CopyPageButton content={content} />
         </div>
       </div>
-      <article className="markdown prose prose-sm prose-zinc max-w-none sm:prose-base mb-24 dark:prose-invert">
-        <h1 className="mb-4 text-3xl font-bold tracking-tight text-zinc-900 dark:text-zinc-100 sm:text-4xl">
+      <div className="mb-24">
+        <h1 className="mb-4 text-3xl font-bold tracking-tight text-zinc-950 sm:text-4xl dark:text-zinc-50">
           {title}
         </h1>
-        <MDXRemote
-          source={content}
-          components={components}
-          options={{ mdxOptions: { remarkPlugins: [remarkGfm] } }}
-        />
-      </article>
+        <article className="markdown prose prose-sm prose-zinc max-w-none sm:prose-base dark:prose-invert">
+          <MDXRemote
+            source={content}
+            components={components}
+            options={{ mdxOptions: { remarkPlugins: [remarkGfm] } }}
+          />
+        </article>
+      </div>
     </div>
   );
 }

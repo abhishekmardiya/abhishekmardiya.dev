@@ -1,21 +1,5 @@
 import type { NextConfig } from "next";
 
-const isDevelopmentMode = process.env.NODE_ENV === "development";
-
-const cspHeader = `
-    default-src 'self';
-    script-src 'self' 'unsafe-inline'${isDevelopmentMode ? " 'unsafe-eval'" : ""} https://va.vercel-scripts.com;
-    style-src 'self' 'unsafe-inline';
-    img-src 'self' blob: data:;
-    font-src 'self';
-    object-src 'none';
-    base-uri 'self';
-    form-action 'self';
-    frame-ancestors 'none';
-    connect-src 'self' https://vitals.vercel-insights.com;
-    ${isDevelopmentMode ? "" : "upgrade-insecure-requests;"}
-`;
-
 const nextConfig: NextConfig = {
   reactCompiler: true,
   poweredByHeader: false,
@@ -53,10 +37,6 @@ const nextConfig: NextConfig = {
           {
             key: "X-DNS-Prefetch-Control",
             value: "on",
-          },
-          {
-            key: "Content-Security-Policy",
-            value: cspHeader.replace(/\n/g, ""),
           },
           ...(process.env.NEXT_PUBLIC_VERCEL_ENV === "production"
             ? [

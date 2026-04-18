@@ -73,14 +73,6 @@ body {
   margin-top: -0.1rem !important;
 }
 
-.markdown > h1 {
-  color: var(--color-zinc-900);
-}
-
-.dark .markdown > h1 {
-  color: var(--color-zinc-200);
-}
-
 /*
   prose-invert defaults to --tw-prose-invert-pre-bg: rgb(0 0 0 / 50%).
   sugar-high colors whitespace with var(--sh-space). Overriding --sh-space to
@@ -89,27 +81,18 @@ body {
   with :root --sh-space. Dark theme already sets --sh-space on .dark.
 */
 .markdown {
+  /* Hex (not theme vars): prose and source order can otherwise win over var() in this file. */
+  --tw-prose-headings: #18181b;
+  --tw-prose-invert-headings: #f4f4f5;
   --tw-prose-invert-pre-bg: #16161e;
 }
 
-.markdown :is(h2, h3, h4, h5, h6) {
-  color: transparent;
-  background-image: linear-gradient(
-    90deg,
-    var(--color-sky-600),
-    var(--color-blue-700)
-  );
-  -webkit-background-clip: text;
-  background-clip: text;
-  width: fit-content;
+.markdown :is(h1, h2, h3, h4, h5, h6) {
+  color: #18181b !important;
 }
 
-.dark .markdown :is(h2, h3, h4, h5, h6) {
-  background-image: linear-gradient(
-    90deg,
-    var(--color-sky-400),
-    var(--color-blue-400)
-  );
+.dark .markdown :is(h1, h2, h3, h4, h5, h6) {
+  color: #f4f4f5 !important;
 }
 
 /* Blockquotes: remove default italic and quotation marks, make bold */

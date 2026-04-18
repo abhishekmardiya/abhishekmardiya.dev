@@ -25,7 +25,7 @@ export function generateMetadata(): Metadata {
 export default function Page() {
   return (
     <section>
-      <h1 className="sm:mt-6 mb-6 text-xl font-semibold tracking-tighter sm:mb-8 sm:text-2xl">
+      <h1 className="sm:mt-6 mb-6 text-xl font-semibold tracking-tighter text-zinc-900 sm:mb-8 sm:text-2xl dark:text-zinc-100">
         {SITE_CONSTANTS.siteName}
       </h1>
 
@@ -35,7 +35,9 @@ export default function Page() {
 
       <div className="my-6 sm:my-8">
         <div className="mb-3 flex items-center justify-between gap-3 sm:mb-4 sm:gap-4">
-          <h2 className="text-lg font-medium sm:text-xl">Blog</h2>
+          <h2 className="text-lg font-medium text-zinc-900 sm:text-xl dark:text-zinc-100">
+            Blog
+          </h2>
           <Link
             href="/blog"
             className="text-sm text-zinc-600 hover:text-zinc-900 active:text-zinc-800 dark:text-zinc-400 dark:hover:text-zinc-100 dark:active:text-zinc-200 transition-colors py-2 inline-flex items-center min-h-11"

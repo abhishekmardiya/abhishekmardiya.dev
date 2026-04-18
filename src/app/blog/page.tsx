@@ -25,7 +25,7 @@ export default function BlogPage() {
   return (
     <section>
       <GoHomeLink className="sm:mt-4 mb-6 sm:mb-8" />
-      <h1 className="mb-6 text-2xl font-semibold tracking-tighter sm:mb-8 sm:text-3xl">
+      <h1 className="mb-6 text-2xl font-semibold tracking-tighter text-zinc-900 sm:mb-8 sm:text-3xl dark:text-zinc-100">
         Blog
       </h1>
 
