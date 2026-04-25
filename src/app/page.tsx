@@ -36,34 +36,34 @@ export default function Page() {
         {"I'm a "}
         {SITE_CONSTANTS.profession}
         {" specializing in "}
-        <a
+        <Link
           href="https://react.dev"
           target="_blank"
           rel="noopener noreferrer"
           className={bioInlineLinkClassName}
         >
           React
-        </a>
+        </Link>
         {" and "}
-        <a
+        <Link
           href="https://nextjs.org"
           target="_blank"
           rel="noopener noreferrer"
           className={bioInlineLinkClassName}
         >
           Next.js
-        </a>
+        </Link>
         {
           ", focused on building scalable, high-performance web applications. I enjoy optimizing performance, designing clean frontend architecture, and turning complex problems into simple, efficient solutions. I leverage AI-assisted development workflows to enhance productivity and code quality. I'm passionate about building impactful products and continuously improving as an engineer. I would love to keep contributing to open source, and I've already "
         }
-        <a
+        <Link
           href={SITE_CONSTANTS.nextJsContributionsUrl}
           target="_blank"
           rel="noopener noreferrer"
           className={bioInlineLinkClassName}
         >
           contributed to Next.js
-        </a>
+        </Link>
         {"."}
       </p>
 

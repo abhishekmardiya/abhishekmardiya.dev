@@ -1,3 +1,4 @@
+import Link from "next/link";
 import type { ReactElement } from "react";
 import { PROJECTS } from "@/constants";
 
@@ -30,22 +31,22 @@ export const ProjectsSection = (): ReactElement => {
               {project.description}
             </p>
             <div className="mt-3 flex flex-wrap gap-x-4 gap-y-2">
-              <a
+              <Link
                 href={project.liveDemoUrl}
                 target="_blank"
                 rel="noopener noreferrer"
                 className={projectLinkClassName}
               >
                 Live demo
-              </a>
-              <a
+              </Link>
+              <Link
                 href={project.githubUrl}
                 target="_blank"
                 rel="noopener noreferrer"
                 className={projectLinkClassName}
               >
                 GitHub
-              </a>
+              </Link>
             </div>
           </li>
         ))}
