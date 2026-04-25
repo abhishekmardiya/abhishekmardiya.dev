@@ -51,6 +51,10 @@ const nextConfig: NextConfig = {
                   value: "noindex, nofollow",
                 },
               ]),
+          {
+            key: "Permissions-Policy",
+            value: "camera=(), microphone=(), geolocation=()",
+          },
         ],
       },
     ];

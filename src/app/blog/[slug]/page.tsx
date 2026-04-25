@@ -80,7 +80,7 @@ export default async function BlogPage({ params }: Props) {
         }}
       />
 
-      <div className="sm:mt-10 flex flex-wrap items-center justify-between gap-4">
+      <div className="flex flex-wrap items-center justify-between gap-4">
         <GoHomeLink />
         <div className="flex flex-wrap items-center gap-3 sm:gap-4">
           <span className="text-sm text-zinc-500 dark:text-gray-400 whitespace-nowrap">
@@ -90,7 +90,7 @@ export default async function BlogPage({ params }: Props) {
           <CopyPageButton content={content} />
         </div>
       </div>
-      <div className="mb-24">
+      <div>
         <h1 className="mb-4 text-3xl font-bold tracking-tight text-zinc-950 sm:text-4xl dark:text-zinc-50">
           {title}
         </h1>

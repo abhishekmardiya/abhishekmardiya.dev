@@ -1,14 +1,15 @@
 import Link from "next/link";
+import type { ReactElement } from "react";
 import { SITE_CONSTANTS } from "@/constants";
 
-export const Footer = () => {
-  const links = [
+export const Footer = (): ReactElement => {
+  const links: readonly { name: string; url: string }[] = [
     { name: "LinkedIn", url: SITE_CONSTANTS.linkedinUrl },
     { name: "GitHub", url: SITE_CONSTANTS.githubUrl },
   ];
 
   return (
-    <footer className="px-4 text-center">
+    <footer className="px-4 text-center mt-12">
       <div className="flex flex-wrap justify-center gap-4 gap-y-3 tracking-tight">
         {links.map((link) => (
           <Link

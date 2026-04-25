@@ -1,13 +1,16 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { BlogLinks } from "@/component/BlogLinks";
+import { ProjectsSection } from "@/component/ProjectsSection";
 import { SITE_CONSTANTS } from "@/constants";
 import { getOgImage, getSeoMetaData } from "@/utils";
 
+const bioInlineLinkClassName: string =
+  "underline decoration-zinc-400 underline-offset-2 transition-colors hover:text-blue-600 dark:decoration-zinc-600 dark:hover:text-blue-400";
+
 export function generateMetadata(): Metadata {
   const title = `${SITE_CONSTANTS.siteName} | ${SITE_CONSTANTS.profession}`;
-  const description =
-    "Software Developer Engineer passionate about crafting high-performance web applications, exploring modern frontend architectures, and sharing technical insights.";
+  const description = `${SITE_CONSTANTS.profession} passionate about crafting high-performance web applications, exploring modern frontend architectures, and sharing technical insights.`;
 
   const { ogImage } = getOgImage(title);
 
@@ -30,7 +33,38 @@ export default function Page() {
       </h1>
 
       <p className="text-[15px] leading-relaxed sm:text-base">
-        {`I'm a ${SITE_CONSTANTS.profession} focused on building scalable, high-performance web applications. I enjoy working with modern JavaScript ecosystems, crafting clean architecture, and turning complex problems into simple, efficient solutions. I'm passionate about continuous learning and building products that deliver real impact.`}
+        {"I'm a "}
+        {SITE_CONSTANTS.profession}
+        {" specializing in "}
+        <a
+          href="https://react.dev"
+          target="_blank"
+          rel="noopener noreferrer"
+          className={bioInlineLinkClassName}
+        >
+          React
+        </a>
+        {" and "}
+        <a
+          href="https://nextjs.org"
+          target="_blank"
+          rel="noopener noreferrer"
+          className={bioInlineLinkClassName}
+        >
+          Next.js
+        </a>
+        {
+          ", focused on building scalable, high-performance web applications. I enjoy optimizing performance, designing clean frontend architecture, and turning complex problems into simple, efficient solutions. I leverage AI-assisted development workflows to enhance productivity and code quality. I'm passionate about building impactful products and continuously improving as an engineer. I would love to keep contributing to open source, and I've already "
+        }
+        <a
+          href={SITE_CONSTANTS.nextJsContributionsUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          className={bioInlineLinkClassName}
+        >
+          contributed to Next.js
+        </a>
+        {"."}
       </p>
 
       <div className="my-6 sm:my-8">
@@ -47,6 +81,8 @@ export default function Page() {
         </div>
         <BlogLinks isFromIndexPage />
       </div>
+
+      <ProjectsSection />
     </section>
   );
 }
