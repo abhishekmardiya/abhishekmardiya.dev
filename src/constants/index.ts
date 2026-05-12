@@ -1,9 +1,3 @@
-import type { Project } from "./projects";
-import { PROJECTS } from "./projects";
-
-export type { Project };
-export { PROJECTS };
-
 type SiteConstants = {
   siteUrl: string;
   siteName: string;

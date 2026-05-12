@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { BlogLinks } from "@/component/BlogLinks";
-import { ProjectsSection } from "@/component/ProjectsSection";
 import { SITE_CONSTANTS } from "@/constants";
 import { getOgImage, getSeoMetaData } from "@/utils";
 
@@ -81,8 +80,6 @@ export default function Page() {
         </div>
         <BlogLinks isFromIndexPage />
       </div>
-
-      <ProjectsSection />
     </section>
   );
 }
